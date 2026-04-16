@@ -325,16 +325,16 @@
       
       tableBody.innerHTML = pageUsers.map(user => `
         <tr>
-          <td class="px-6 py-4 whitespace-nowrap">${user.id}</td>
+          <td class="px-6 py-4 whitespace-nowrap">${user._id || user.id}</td>
           <td class="px-6 py-4 whitespace-nowrap">${user.gameId}</td>
           <td class="px-6 py-4 whitespace-nowrap">${user.name}</td>
           <td class="px-6 py-4 whitespace-nowrap">${user.personality}</td>
           <td class="px-6 py-4 whitespace-nowrap">${new Date(user.timestamp).toLocaleString()}</td>
           <td class="px-6 py-4 whitespace-nowrap">
-            <button class="text-primary hover:text-primary/80 mr-3">
+            <button class="text-primary hover:text-primary/80 mr-3" onclick="editUser('${user._id || user.id}')">
               <i class="fa fa-edit"></i>
             </button>
-            <button class="text-red-500 hover:text-red-600">
+            <button class="text-red-500 hover:text-red-600" onclick="deleteUser('${user._id || user.id}')">
               <i class="fa fa-trash"></i>
             </button>
           </td>
@@ -382,6 +382,38 @@
       link.download = `ddnet-users-${new Date().toISOString().split('T')[0]}.json`;
       link.click();
       URL.revokeObjectURL(url);
+    }
+
+    // 删除用户
+    function deleteUser(userId) {
+      if (!confirm('确定要删除这个用户吗？此操作不可撤销。')) {
+        return;
+      }
+
+      fetch(API_BASE + '/api/users/' + userId, {
+        method: 'DELETE'
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          alert('用户删除成功');
+          loadUsers();
+        } else {
+          alert('删除失败：' + data.message);
+        }
+      })
+      .catch(error => {
+        console.error('删除用户失败:', error);
+        alert('删除失败，请稍后重试');
+      });
+    }
+
+    // 编辑用户（目前仅显示信息，后续可扩展编辑功能）
+    function editUser(userId) {
+      const user = users.find(u => (u._id || u.id) === userId);
+      if (user) {
+        alert('用户信息：\n\n游戏ID：' + user.gameId + '\n用户名：' + user.name + '\n人格类型：' + user.personality + '\n提交时间：' + new Date(user.timestamp).toLocaleString());
+      }
     }
   </script>
 </body>
