@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>人格报告</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+    
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .animate-fade-in-up {
+      animation: fadeInUp 0.6s ease-out forwards;
+    }
+    
+    .image-container {
+      opacity: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    /* 响应式设计 */
+    @media (max-width: 768px) {
+      /* 头部导航调整 */
+      header {
+        position: relative;
+        z-index: 10;
+      }
+      
+      header a {
+        font-size: 0.8rem;
+        padding: 0.4rem 0.8rem;
+        position: absolute;
+        bottom: 1rem;
+        right: 1rem;
+        z-index: 20;
+      }
+      
+      /* 图片容器调整 */
+      .w-full.max-w-4xl {
+        max-width: 100%;
+        position: relative;
+      }
+      
+      .image-container {
+        width: 100%;
+        min-height: 80vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      
+      /* 图片调整 */
+      #personalityImage {
+        max-width: 100%;
+        max-height: 80vh;
+        object-fit: contain;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      /* 更小屏幕的调整 */
+      header a {
+        font-size: 0.7rem;
+        padding: 0.3rem 0.6rem;
+      }
+      
+      /* 图片调整 */
+      #personalityImage {
+        max-height: 70vh;
+      }
+      
+      .image-container {
+        min-height: 70vh;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
+  <!-- 图片容器 -->
+  <div class="w-full max-w-4xl flex flex-col items-center justify-start pt-8 relative">
+    <!-- 头部导航 -->
+    <header class="w-full max-w-4xl mb-6 flex justify-end items-center">
+      <a href="javascript:history.back()" class="flex items-center gap-3 px-6 py-3 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition-all duration-300 transform hover:scale-105">
+        <i class="fa fa-arrow-left text-xl"></i>
+        <span class="font-semibold text-lg">返回结果</span>
+      </a>
+    </header>
+    
+    <div class="image-container animate-fade-in-up" style="animation-delay: 0.4s;">
+      <img id="personalityImage" src="" alt="人格报告" class="max-w-full max-h-[80vh] object-contain rounded-lg">
+    </div>
+  </div>
+  
+  <!-- 交互JS -->
+  <script>
+    // 人格名称到背景图片的映射
+    const personalityBackgroundMap = {
+      '整活艺术家': '24.png',                // 整活艺术家
+      '团队依赖户': '22.png',                // 团队依赖户
+      '扩列狂魔': '14.png',                  // 扩列狂魔
+      '带飞者': '21.png',                    // 带飞者
+      '装杯带师': '17.png',                  // 装杯带师
+      '小丑竟是我': '16.png',                // 小丑竟是我
+      '背锅侠': '19.png',                    // 背锅侠
+      '策略大师': '12.png',                  // 策略大师
+      '中立者': '15.png',                    // 中立者
+      '独攀者': '20.png',                    // 独攀者
+      '偷跑tee': '11.png',                   // 偷跑Tee
+      '躺平咸鱼': '23.png',                  // 躺平咸鱼
+      '摆烂仙人': '10.png',                  // 摆烂仙人
+      '键盘粉碎者': '18.png'                 // 键盘粉碎者
+    };
+    
+    // 从URL参数获取图片路径
+    function getImagePath() {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get('image') || '';
+    }
+    
+    // 从图片路径中提取人格名称
+    function getPersonalityNameFromImagePath(imagePath) {
+      // 从图片路径中提取人格名称
+      // 图片路径格式：images/{personalityName}.png
+      const match = imagePath.match(/images\/(.*)\.png/i);
+      if (match && match[1]) {
+        return match[1];
+      }
+      return '';
+    }
+    
+    // 初始化页面
+    function init() {
+      const imagePath = getImagePath();
+      
+      if (imagePath) {
+        const imageEl = document.getElementById('personalityImage');
+        
+        if (imageEl) {
+          imageEl.src = imagePath;
+          
+          // 从图片路径中提取人格名称
+          const personalityName = getPersonalityNameFromImagePath(imagePath);
+          
+          // 设置对应的背景图片
+          if (personalityName) {
+            const backgroundImage = personalityBackgroundMap[personalityName];
+            if (backgroundImage) {
+              document.body.style.backgroundImage = `url('images/${backgroundImage}')`;
+            }
+          }
+        }
+      }
+    }
+    
+    // 页面加载完成后初始化
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

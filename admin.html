@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DDnet人格测试 - 后台管理</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#0052D9',
+            secondary: '#FF6B8B',
+            accent: '#FFD93D',
+            dark: '#2C3E50',
+            light: '#F8F9FA'
+          },
+          fontFamily: {
+            sans: ['PingFang SC', 'Microsoft YaHei', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .text-shadow-sm {
+        text-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      }
+      .btn-shadow {
+        box-shadow: 0 8px 20px rgba(0, 82, 217, 0.25);
+      }
+      .btn-hover {
+        transition: all 0.3s ease;
+      }
+      .btn-hover:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 25px rgba(0, 82, 217, 0.3);
+      }
+      .card-shadow {
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-gray-50">
+  <!-- 导航栏 -->
+  <nav class="bg-primary text-white shadow-md">
+    <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+      <h1 class="text-xl font-bold">DDnet人格测试 - 后台管理</h1>
+      <div>
+        <button id="refreshBtn" class="px-4 py-2 bg-white text-primary rounded-lg font-medium hover:bg-gray-100 transition-colors">
+          <i class="fa fa-refresh mr-2"></i> 刷新数据
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主内容区 -->
+  <main class="container mx-auto px-4 py-8">
+    <!-- 统计信息 -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div class="bg-white rounded-xl shadow-md p-6">
+        <h3 class="text-gray-500 mb-2">总用户数</h3>
+        <p id="totalUsers" class="text-3xl font-bold text-primary">0</p>
+      </div>
+      <div class="bg-white rounded-xl shadow-md p-6">
+        <h3 class="text-gray-500 mb-2">今日新增</h3>
+        <p id="todayUsers" class="text-3xl font-bold text-secondary">0</p>
+      </div>
+      <div class="bg-white rounded-xl shadow-md p-6">
+        <h3 class="text-gray-500 mb-2">人格类型数</h3>
+        <p id="personalityTypes" class="text-3xl font-bold text-accent">0</p>
+      </div>
+    </div>
+
+    <!-- 筛选和搜索 -->
+    <div class="bg-white rounded-xl shadow-md p-6 mb-8">
+      <div class="flex flex-col md:flex-row gap-4">
+        <div class="flex-1">
+          <label class="block text-gray-700 mb-2">人格类型</label>
+          <select id="personalityFilter" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+            <option value="all">全部</option>
+            <!-- 人格类型将通过JS动态添加 -->
+          </select>
+        </div>
+        <div class="flex-1">
+          <label class="block text-gray-700 mb-2">搜索</label>
+          <div class="relative">
+            <input type="text" id="searchInput" placeholder="搜索游戏ID或用户名" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+            <button id="searchBtn" class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-primary">
+              <i class="fa fa-search"></i>
+            </button>
+          </div>
+        </div>
+        <div class="flex items-end">
+          <button id="exportBtn" class="px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors">
+            <i class="fa fa-download mr-2"></i> 导出数据
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 用户数据表格 -->
+    <div class="bg-white rounded-xl shadow-md overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead class="bg-gray-100">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">游戏ID</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">用户名</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">人格类型</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">提交时间</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+            </tr>
+          </thead>
+          <tbody id="userTableBody" class="bg-white divide-y divide-gray-200">
+            <!-- 用户数据将通过JS动态添加 -->
+            <tr>
+              <td colspan="6" class="px-6 py-12 text-center text-gray-500">
+                <i class="fa fa-spinner fa-spin text-2xl mb-4 block"></i>
+                <p>加载中...</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <!-- 分页 -->
+      <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex items-center justify-between">
+        <div class="text-sm text-gray-500">
+          显示 <span id="showingFrom">1</span> 到 <span id="showingTo">10</span> 共 <span id="totalCount">0</span> 条记录
+        </div>
+        <div class="flex space-x-2">
+          <button id="prevPage" class="px-3 py-1 border border-gray-300 rounded-md text-sm text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+            上一页
+          </button>
+          <button id="nextPage" class="px-3 py-1 border border-gray-300 rounded-md text-sm text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+            下一页
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- 交互JS -->
+  <script>
+    // 全局变量
+    const API_BASE = 'https://ayin-production.up.railway.app'; // 后端API地址
+    let users = [];
+    let filteredUsers = [];
+    let currentPage = 1;
+    const pageSize = 10;
+    let personalityTypes = [];
+
+    // 初始化
+    document.addEventListener('DOMContentLoaded', function() {
+      loadUsers();
+      bindEvents();
+    });
+
+    // 绑定事件
+    function bindEvents() {
+      // 刷新按钮
+      document.getElementById('refreshBtn').addEventListener('click', loadUsers);
+      
+      // 搜索按钮
+      document.getElementById('searchBtn').addEventListener('click', searchUsers);
+      
+      // 搜索输入框回车
+      document.getElementById('searchInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          searchUsers();
+        }
+      });
+      
+      // 人格类型筛选
+      document.getElementById('personalityFilter').addEventListener('change', filterUsers);
+      
+      // 导出按钮
+      document.getElementById('exportBtn').addEventListener('click', exportData);
+      
+      // 分页按钮
+      document.getElementById('prevPage').addEventListener('click', function() {
+        if (currentPage > 1) {
+          currentPage--;
+          renderUsers();
+        }
+      });
+      
+      document.getElementById('nextPage').addEventListener('click', function() {
+        const totalPages = Math.ceil(filteredUsers.length / pageSize);
+        if (currentPage < totalPages) {
+          currentPage++;
+          renderUsers();
+        }
+      });
+    }
+
+    // 加载用户数据
+    function loadUsers() {
+      // 显示加载状态
+      document.getElementById('userTableBody').innerHTML = `
+        <tr>
+          <td colspan="6" class="px-6 py-12 text-center text-gray-500">
+            <i class="fa fa-spinner fa-spin text-2xl mb-4 block"></i>
+            <p>加载中...</p>
+          </td>
+        </tr>
+      `;
+      
+      // 从后端API获取数据
+      fetch(API_BASE + '/api/users')
+        .then(response => response.json())
+        .then(data => {
+          if (data.success && data.data) {
+            users = data.data;
+            filteredUsers = [...users];
+            updatePersonalityTypes();
+            updateStatistics();
+            renderUsers();
+          } else {
+            // 模拟数据，用于测试
+            users = generateMockData();
+            filteredUsers = [...users];
+            updatePersonalityTypes();
+            updateStatistics();
+            renderUsers();
+          }
+        })
+        .catch(error => {
+          console.error('获取用户数据失败:', error);
+          // 生成模拟数据用于测试
+          users = generateMockData();
+          filteredUsers = [...users];
+          updatePersonalityTypes();
+          updateStatistics();
+          renderUsers();
+        });
+    }
+
+    // 生成模拟数据
+    function generateMockData() {
+      const personalities = [
+        'Emotional Player', 'Hidden Personality', 'Challenge Avoider', 'Lying Flat Fish',
+        'Rusher', 'Bald Grinder', 'Balanced Player', 'Rational Thinker',
+        'Responsible Anchor', 'Self-Deprecating Humorist', 'Confident Competitor',
+        'Carry Goat', 'Friend Collector', 'Team Supporter', 'Jokester'
+      ];
+      
+      const mockUsers = [];
+      for (let i = 1; i <= 50; i++) {
+        const personality = personalities[Math.floor(Math.random() * personalities.length)];
+        const now = new Date();
+        const randomDays = Math.floor(Math.random() * 30);
+        const timestamp = new Date(now.getTime() - randomDays * 24 * 60 * 60 * 1000).toISOString();
+        
+        mockUsers.push({
+          id: i,
+          gameId: `Player${i}`,
+          name: `用户${i}`,
+          personality: personality,
+          timestamp: timestamp
+        });
+      }
+      return mockUsers;
+    }
+
+    // 更新人格类型列表
+    function updatePersonalityTypes() {
+      const personalitySet = new Set(users.map(user => user.personality));
+      personalityTypes = Array.from(personalitySet);
+      
+      const select = document.getElementById('personalityFilter');
+      select.innerHTML = '<option value="all">全部</option>';
+      
+      personalityTypes.forEach(type => {
+        const option = document.createElement('option');
+        option.value = type;
+        option.textContent = type;
+        select.appendChild(option);
+      });
+    }
+
+    // 更新统计信息
+    function updateStatistics() {
+      document.getElementById('totalUsers').textContent = users.length;
+      
+      // 计算今日新增
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const todayUsers = users.filter(user => new Date(user.timestamp) >= today);
+      document.getElementById('todayUsers').textContent = todayUsers.length;
+      
+      // 人格类型数
+      document.getElementById('personalityTypes').textContent = personalityTypes.length;
+      
+      document.getElementById('totalCount').textContent = users.length;
+    }
+
+    // 渲染用户数据
+    function renderUsers() {
+      const startIndex = (currentPage - 1) * pageSize;
+      const endIndex = startIndex + pageSize;
+      const pageUsers = filteredUsers.slice(startIndex, endIndex);
+      
+      const tableBody = document.getElementById('userTableBody');
+      
+      if (pageUsers.length === 0) {
+        tableBody.innerHTML = `
+          <tr>
+            <td colspan="6" class="px-6 py-12 text-center text-gray-500">
+              <i class="fa fa-info-circle text-2xl mb-4 block"></i>
+              <p>暂无数据</p>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+      
+      tableBody.innerHTML = pageUsers.map(user => `
+        <tr>
+          <td class="px-6 py-4 whitespace-nowrap">${user.id}</td>
+          <td class="px-6 py-4 whitespace-nowrap">${user.gameId}</td>
+          <td class="px-6 py-4 whitespace-nowrap">${user.name}</td>
+          <td class="px-6 py-4 whitespace-nowrap">${user.personality}</td>
+          <td class="px-6 py-4 whitespace-nowrap">${new Date(user.timestamp).toLocaleString()}</td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <button class="text-primary hover:text-primary/80 mr-3">
+              <i class="fa fa-edit"></i>
+            </button>
+            <button class="text-red-500 hover:text-red-600">
+              <i class="fa fa-trash"></i>
+            </button>
+          </td>
+        </tr>
+      `).join('');
+      
+      // 更新分页信息
+      document.getElementById('showingFrom').textContent = startIndex + 1;
+      document.getElementById('showingTo').textContent = Math.min(endIndex, filteredUsers.length);
+      document.getElementById('totalCount').textContent = filteredUsers.length;
+      
+      // 更新分页按钮状态
+      document.getElementById('prevPage').disabled = currentPage === 1;
+      document.getElementById('nextPage').disabled = endIndex >= filteredUsers.length;
+    }
+
+    // 搜索用户
+    function searchUsers() {
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+      const personalityFilter = document.getElementById('personalityFilter').value;
+      
+      filteredUsers = users.filter(user => {
+        const matchesSearch = user.gameId.toLowerCase().includes(searchTerm) || 
+                             user.name.toLowerCase().includes(searchTerm);
+        const matchesPersonality = personalityFilter === 'all' || user.personality === personalityFilter;
+        return matchesSearch && matchesPersonality;
+      });
+      
+      currentPage = 1;
+      renderUsers();
+    }
+
+    // 筛选用户
+    function filterUsers() {
+      searchUsers();
+    }
+
+    // 导出数据
+    function exportData() {
+      const dataStr = JSON.stringify(filteredUsers, null, 2);
+      const dataBlob = new Blob([dataStr], {type: 'application/json'});
+      const url = URL.createObjectURL(dataBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `ddnet-users-${new Date().toISOString().split('T')[0]}.json`;
+      link.click();
+      URL.revokeObjectURL(url);
+    }
+  </script>
+</body>
+</html>

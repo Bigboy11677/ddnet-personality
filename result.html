@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DDnet人格测试 - 测试结果</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  
+  <!-- 自定义配置 -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#0052D9',
+            secondary: '#FF6B8B',
+            accent: '#FFD93D',
+            dark: '#2C3E50',
+            light: '#F8F9FA'
+          },
+          fontFamily: {
+            sans: ['PingFang SC', 'Microsoft YaHei', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .text-shadow-sm {
+        text-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      }
+      .text-shadow-md {
+        text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      }
+      .text-shadow-lg {
+        text-shadow: 0 4px 8px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.08);
+      }
+      .btn-shadow {
+        box-shadow: 0 8px 20px rgba(0, 82, 217, 0.25);
+      }
+      .btn-hover {
+        transition: all 0.3s ease;
+      }
+      .btn-hover:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 25px rgba(0, 82, 217, 0.3);
+      }
+      .card-shadow {
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      }
+      .moe-gradient {
+        background: linear-gradient(135deg, #0052D9, #4A90E2);
+      }
+    }
+  </style>
+  
+  <style>
+    /* 全局基础样式 - 易读性优化 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: "PingFang SC", "Microsoft YaHei", "思源黑体", sans-serif;
+      line-height: 1.75;
+      letter-spacing: 0.02em;
+      color: #1a1a1a;
+      overflow-x: hidden;
+      background-color: #f5f7fa;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    /* 标题层级优化 */
+    h2 {
+      font-size: 2rem;
+      font-weight: 800;
+      line-height: 1.3;
+      letter-spacing: 0.03em;
+      color: #0052D9;
+    }
+    
+    h3 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      line-height: 1.4;
+      letter-spacing: 0.02em;
+      color: #2C3E50;
+    }
+    
+    h4 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      line-height: 1.5;
+      color: #2C3E50;
+    }
+    
+    h5 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.5;
+      color: #2C3E50;
+    }
+    
+    p {
+      line-height: 1.8;
+      letter-spacing: 0.02em;
+      color: #374151;
+    }
+    
+    /* 文本块分隔线 */
+    .section-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #e5e7eb, transparent);
+      margin: 2rem 0;
+    }
+    
+    /* 项目符号优化 */
+    ul {
+      list-style: none;
+      padding-left: 0;
+    }
+    
+    ul li {
+      padding-left: 1.75rem;
+      position: relative;
+      margin-bottom: 0.75rem;
+      line-height: 1.7;
+    }
+    
+    ul li::before {
+      content: "•";
+      position: absolute;
+      left: 0.5rem;
+      color: #0052D9;
+      font-weight: bold;
+      font-size: 1.2em;
+    }
+    
+    /* 响应式设计 - 移动端优化 */
+    @media (max-width: 768px) {
+      /* 主容器调整 */
+      .w-full.max-w-5xl {
+        max-width: 100%;
+      }
+      .main-container {
+        padding: 0.5rem !important;
+      }
+      main.p-6.sm\:p-8 {
+        padding: 1rem !important;
+      }
+
+      /* 标题全局缩放 */
+      h2 { font-size: 1.2rem; }
+      h3 { font-size: 1rem; }
+      h4 { font-size: 0.9rem; }
+      h5 { font-size: 0.82rem; }
+
+      /* 结果名称和类型 */
+      #resultName { font-size: 1.9rem; }
+      #resultType  { font-size: 1.05rem; }
+
+      /* 通用段落/列表缩放 */
+      p { font-size: 0.82rem; line-height: 1.55; }
+      ul li { padding-left: 1.25rem; margin-bottom: 0.35rem; font-size: 0.82rem; }
+
+      /* 间距收紧 */
+      .mb-12 { margin-bottom: 1.25rem; }
+      .mb-10 { margin-bottom: 1rem; }
+      .mb-8  { margin-bottom: 0.85rem; }
+
+      /* 座右铭区域 */
+      .max-w-2xl.mx-auto.mb-8.sm\:mb-10.p-5.sm\:p-6 {
+        padding: 0.75rem;
+      }
+
+      /* 卡片内边距 */
+      .bg-white.bg-opacity-95.rounded-2xl.p-6 {
+        padding: 0.9rem;
+      }
+
+      /* ── 隐藏分隔线 ── */
+      .section-divider {
+        display: none;
+      }
+
+      /* ── 人格介绍标题居中 ── */
+      #introTitle {
+        text-align: center;
+      }
+
+      /* ── 特点分析标题居中 ── */
+      #analysisTitle {
+        text-align: center;
+      }
+
+      /* ── 特点分析：主要优势 + 待提升领域 同排左右各占一半 ── */
+      .grid.grid-cols-1.md\:grid-cols-2 {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 0.5rem;
+      }
+
+      /* 两个卡片内文字居中 */
+      .grid.grid-cols-1.md\:grid-cols-2 > div {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 0.6rem 0.5rem !important;
+      }
+
+      /* 标题行（图标+文字）居中 */
+      .grid.grid-cols-1.md\:grid-cols-2 > div h4 {
+        font-size: 0.78rem;
+        justify-content: center;
+        margin-bottom: 0.4rem;
+      }
+
+      /* 列表项居中对齐 */
+      .grid.grid-cols-1.md\:grid-cols-2 > div ul {
+        width: 100%;
+        text-align: left;      /* 文字左对齐，整体块居中 */
+        display: inline-block;
+      }
+      .grid.grid-cols-1.md\:grid-cols-2 > div ul li {
+        font-size: 0.68rem;
+        margin-bottom: 0.25rem;
+        padding-left: 1rem;
+      }
+
+      /* ── 关键行为特征标题居中 ── */
+      #traitsTitle {
+        text-align: center;
+        margin-bottom: 0.6rem;
+      }
+
+      /* ── 关键行为特征：改为 2×2，确保文字完整显示 ── */
+      #traitsGrid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.5rem;
+      }
+
+      /* 特征卡片：自然撑高，不截断 */
+      #traitsGrid > div {
+        padding: 0.6rem 0.5rem !important;
+        border-radius: 8px !important;
+      }
+      #traitsGrid > div h5 {
+        font-size: 0.78rem;
+        margin-bottom: 0.25rem;
+        font-weight: 700;
+      }
+      #traitsGrid > div p {
+        font-size: 0.7rem;
+        line-height: 1.45;
+        /* 取消截断，显示全部文字 */
+        display: block;
+        -webkit-line-clamp: unset;
+        line-clamp: unset;
+        overflow: visible;
+      }
+
+      /* 按钮区域 */
+      .flex.flex-col.sm\:flex-row {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      button {
+        min-height: 40px;
+        width: 100%;
+        font-size: 0.8rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      main.p-6.sm\:p-8 { padding: 0.75rem !important; }
+      #resultName { font-size: 1.6rem; }
+      #resultType  { font-size: 0.92rem; }
+      h2 { font-size: 1.05rem; }
+      h3 { font-size: 0.92rem; }
+      h4 { font-size: 0.82rem; }
+
+      p  { font-size: 0.76rem; line-height: 1.45; }
+
+      .bg-white.bg-opacity-95.rounded-2xl.p-6 { padding: 0.65rem; }
+      .max-w-2xl.mx-auto.mb-8.sm\:mb-10.p-5.sm\:p-6 { padding: 0.55rem; }
+
+      button { min-height: 36px; font-size: 0.75rem; }
+
+      /* 优势/待提升列表文字再缩 */
+      .grid.grid-cols-1.md\:grid-cols-2 > div ul li {
+        font-size: 0.7rem;
+      }
+
+      /* 特征卡片再缩 */
+      #traitsGrid > div h5 { font-size: 0.7rem; }
+      #traitsGrid > div p  { font-size: 0.65rem; line-height: 1.4; }
+    }
+    
+    /* 平滑滚动 */
+    html {
+      scroll-behavior: smooth;
+    }
+    
+    /* 获取概率进度条动画 */
+    @keyframes progress-animation {
+      from { width: 0%; }
+      to { width: var(--progress-width); }
+    }
+    
+    .progress-bar-animate {
+      animation: progress-animation 1.5s ease-out forwards;
+    }
+    
+    /* 图片生成预览动画 */
+    @keyframes fade-in {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .fade-in {
+      animation: fade-in 0.8s ease-out forwards;
+    }
+    
+    /* 关键信息突出显示 */
+    .highlight-text {
+      background: linear-gradient(120deg, rgba(0, 82, 217, 0.1) 0%, rgba(0, 82, 217, 0.1) 100%);
+      padding: 0.125rem 0.375rem;
+      border-radius: 0.25rem;
+      font-weight: 500;
+    }
+    
+    /* 卡片阴影优化 */
+    .card-shadow {
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    
+    /* 触摸反馈 */
+    button:active {
+      transform: scale(0.98);
+      transition: transform 0.1s ease;
+    }
+    
+    /* 按钮触摸优化 */
+    button {
+      cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      min-height: 44px;
+      min-width: 44px;
+    }
+    
+    /* 链接触摸优化 */
+    a {
+      -webkit-tap-highlight-color: transparent;
+      min-height: 44px;
+      min-width: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    /* 触摸反馈优化 */
+    .cursor-pointer:active {
+      transform: scale(0.98);
+      transition: transform 0.1s ease;
+    }
+    
+    /* 加载优化 */
+    .bg-cover {
+      background-size: cover;
+      background-position: center;
+    }
+    
+    /* 移动端背景图调整 */
+    @media (max-width: 768px) {
+      body {
+        background-size: 120% !important;
+        background-position: center top !important;
+      }
+      
+      /* 减少背景叠加层次，确保最多3层 */
+      main {
+        background: rgba(255, 255, 255, 0.9) !important;
+      }
+      
+      .bg-white.bg-opacity-95 {
+        background: rgba(255, 255, 255, 0.95) !important;
+      }
+      
+      .bg-primary.bg-opacity-10 {
+        background: rgba(0, 82, 217, 0.15) !important;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      body {
+        background-size: 150% !important;
+        background-position: center top !important;
+      }
+      
+      /* 减少背景叠加层次，确保最多3层 */
+      main {
+        background: rgba(255, 255, 255, 0.92) !important;
+      }
+      
+      .bg-white.bg-opacity-95 {
+        background: rgba(255, 255, 255, 0.97) !important;
+      }
+      
+      .bg-primary.bg-opacity-10 {
+        background: rgba(0, 82, 217, 0.2) !important;
+      }
+    }
+  </style>
+</head>
+
+<body class="min-h-screen bg-[url('images/background.png')] bg-cover bg-center">
+  <!-- 主容器 -->
+  <div class="w-full max-w-5xl mx-auto min-h-screen main-container">
+    <!-- 结果内容 -->
+    <main class="p-6 sm:p-8 bg-white bg-opacity-80 rounded-2xl shadow-xl mt-6 sm:mt-8 mb-8">
+      <!-- 结果标题 -->
+      <div class="text-center mb-10 sm:mb-12">
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-primary mb-4 sm:mb-6">测试结果</h2>
+        <div class="text-5xl sm:text-6xl font-extrabold text-gray-800 mb-3" id="resultName">加载中...</div>
+        <div class="text-xl sm:text-2xl text-gray-500 mb-6" id="resultType">加载中...</div>
+        
+        <!-- 获取概率评估 -->
+        <div class="max-w-2xl mx-auto mb-8 sm:mb-10">
+          <h3 class="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-center">获取概率评估</h3>
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-sm font-medium">获取概率</span>
+            <span class="text-sm font-medium" id="rarityPercentage">12%</span>
+          </div>
+          <div class="w-full h-4 bg-gray-200 rounded-full overflow-hidden">
+            <div id="rarityBar" class="h-full bg-gradient-to-r from-primary to-secondary rounded-full progress-bar-animate" style="--progress-width: 12%; width: 0%"></div>
+          </div>
+          <p class="text-sm text-gray-600 mt-3 text-center leading-relaxed" id="rarityDescription">你是人群中仅有的12%，具有独特的人格特质</p>
+        </div>
+        
+        <!-- 座右铭展示 -->
+        <div class="max-w-2xl mx-auto mb-8 sm:mb-10 p-5 sm:p-6 bg-primary bg-opacity-10 rounded-2xl">
+          <h3 class="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-center">座右铭</h3>
+          <p class="text-base sm:text-lg text-center italic font-medium leading-relaxed" id="motto">"稳定是胜利的基石，细节决定成败"</p>
+        </div>
+      </div>
+      
+      <!-- 人格介绍模块 -->
+      <div class="mb-12">
+        <h3 id="introTitle" class="text-2xl font-bold mb-6">
+          人格介绍
+        </h3>
+        <div class="bg-white bg-opacity-95 rounded-2xl p-6 card-shadow">
+          <div id="resultDescription" class="text-gray-700 leading-relaxed text-lg">
+            <p>你是游戏中的守护者，注重细节和规则，善于制定和执行计划。你可靠、负责，是团队中值得信赖的成员。</p>
+            <p class="mt-4">在游戏中，你倾向于遵循既定规则，重视团队合作，并且总是努力完成自己的任务。你的稳定性和可靠性使你成为团队中不可或缺的一员。</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="section-divider"></div>
+      
+      <!-- 特点分析模块 -->
+      <div class="mb-10 sm:mb-12">
+        <h3 id="analysisTitle" class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">
+          特点分析
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
+          <!-- 优势 -->
+          <div class="bg-white bg-opacity-95 rounded-2xl p-5 sm:p-6 card-shadow">
+            <h4 class="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-green-600 flex items-center gap-2">
+              <i class="fa fa-check-circle"></i>
+              主要优势
+            </h4>
+            <ul class="space-y-2" id="strengthsList">
+              <li class="flex items-start gap-2">
+                <i class="fa fa-angle-right text-green-500 mt-1"></i>
+                <span class="leading-relaxed">可靠性强，总是能够完成自己的任务</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i class="fa fa-angle-right text-green-500 mt-1"></i>
+                <span class="leading-relaxed">注重细节，善于发现游戏中的小问题</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i class="fa fa-angle-right text-green-500 mt-1"></i>
+                <span class="leading-relaxed">团队意识强，愿意为团队利益牺牲个人利益</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i class="fa fa-angle-right text-green-500 mt-1"></i>
+                <span class="leading-relaxed">制定计划能力强，善于规划游戏策略</span>
+              </li>
+            </ul>
+          </div>
+          
+          <!-- 待提升 -->
+          <div class="bg-white bg-opacity-95 rounded-2xl p-5 sm:p-6 card-shadow">
+            <h4 class="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-amber-600 flex items-center gap-2">
+              <i class="fa fa-exclamation-circle"></i>
+              待提升领域
+            </h4>
+            <ul class="space-y-2" id="improvementsList">
+              <li class="flex items-start gap-2">
+                <i class="fa fa-angle-right text-amber-500 mt-1"></i>
+                <span class="leading-relaxed">有时过于保守，可能错过创新的游戏策略</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i class="fa fa-angle-right text-amber-500 mt-1"></i>
+                <span class="leading-relaxed">对变化的适应能力有待提高</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i class="fa fa-angle-right text-amber-500 mt-1"></i>
+                <span class="leading-relaxed">在压力下可能变得过于谨慎</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i class="fa fa-angle-right text-amber-500 mt-1"></i>
+                <span class="leading-relaxed">有时过于关注规则，可能缺乏灵活性</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        
+        <!-- 关键行为特征 -->
+        <div class="mt-6 bg-white bg-opacity-95 rounded-2xl p-6 card-shadow">
+          <h4 id="traitsTitle" class="text-xl font-semibold mb-4 text-primary">
+            关键行为特征
+          </h4>
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4" id="traitsGrid">
+            <div class="bg-primary bg-opacity-10 p-5 rounded-xl text-center transition-all duration-300 hover:bg-opacity-20 hover:scale-105">
+              <h5 class="font-semibold mb-2">社交</h5>
+              <p class="text-sm text-gray-600 leading-relaxed">在游戏中与他人互动的方式和倾向</p>
+            </div>
+            <div class="bg-primary bg-opacity-10 p-5 rounded-xl text-center transition-all duration-300 hover:bg-opacity-20 hover:scale-105">
+              <h5 class="font-semibold mb-2">责任</h5>
+              <p class="text-sm text-gray-600 leading-relaxed">对团队和游戏任务的责任感和承诺</p>
+            </div>
+            <div class="bg-primary bg-opacity-10 p-5 rounded-xl text-center transition-all duration-300 hover:bg-opacity-20 hover:scale-105">
+              <h5 class="font-semibold mb-2">挑战</h5>
+              <p class="text-sm text-gray-600 leading-relaxed">面对游戏困难和挑战的态度和应对方式</p>
+            </div>
+            <div class="bg-primary bg-opacity-10 p-5 rounded-xl text-center transition-all duration-300 hover:bg-opacity-20 hover:scale-105">
+              <h5 class="font-semibold mb-2">幽默</h5>
+              <p class="text-sm text-gray-600 leading-relaxed">在游戏中的幽默感和娱乐精神</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="section-divider"></div>
+      
+      <!-- 查看报告 -->
+      <div class="mb-10 sm:mb-12">
+        <div class="bg-white bg-opacity-95 rounded-2xl p-5 sm:p-6 card-shadow">
+          <!-- 操作按钮 -->
+          <div class="flex justify-center">
+            <button id="downloadImage" class="w-full max-w-md bg-primary text-white py-3 rounded-lg font-medium btn-shadow btn-hover">
+              <i class="fa fa-download mr-2"></i> 查看Tee的专属报告
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 操作按钮 -->
+      <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+        <button onclick="window.location.href='test.html'" class="px-6 sm:px-8 py-3 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors cursor-pointer w-full sm:w-auto">
+          重新测试
+        </button>
+        <button id="returnHomeBtn" onclick="returnToHomeWithUnlock()" class="px-6 sm:px-8 py-3 bg-primary text-white rounded-lg font-medium btn-shadow btn-hover cursor-pointer w-full sm:w-auto">
+          返回首页
+        </button>
+      </div>
+    </main>
+  </div>
+
+  <!-- 交互JS -->
+  <script>
+
+
+    // DDnet类型数据（基于七个角度）
+    const ddnetTypes = {
+      'Jokester': {
+        name: '整活艺术家',
+        description: '“整活艺术家”是典型的社交型创意人格。\n他的主要驱动力不是胜负，而是让参与过程变得有趣。\n他能在紧张气氛里一句玩笑就让所有人松口气——比如队友连续失误时发一句"诗人上线"；在延迟卡顿时说"卡了"轻描淡写地化解了挫败。\n他们是那种属于"游戏气氛工程师"的人：用梗、表情、语气、调侃、装傻等方式维系社交能量，让整个系统持续运转。\n属于一念神魔人格，稍不注意就会成为真正的小丑，在DDnet里面最为常见。',
+        strengths: [
+          '幽默感强，能够制造轻松愉快的氛围',
+          '创造力强，善于发现新的玩法',
+          '在失败时保持乐观的态度',
+          '享受游戏的过程，不过于在意结果'
+        ],
+        improvements: [
+          '可能过于关注乐趣，忽视游戏目标',
+          '对规则的遵守不够严格',
+          '在需要认真对待的任务中可能缺乏专注',
+          '可能过于调皮，影响团队的正常运行'
+        ],
+        motto: '地图难就让它难，我负责让过程好玩。',
+        rarityDescription: '以笑为刃，以梗为桥，让人们在荒诞与失误之间重新发现——幽默本身就是一种深度的理解。',
+        traits: [
+          { name: '社交', description: '高度外向且幽默感强。擅长自嘲式幽默，能够熟练运用"网络语言与现场即兴"相结合的方式激活聊天节奏。具备极强的语言节奏感和语境感知能力，能够精准捕捉并掌控氛围转折点。' },
+          { name: '责任', description: '尽管主要定位是气氛担当，但通常具备潜在的社交责任心——当察觉到气氛凝滞或有人情绪低落时，会主动采取措施"拉回节奏"。可以说，他们通过营造笑声来承担情绪维护的社交责任。' },
+          { name: '挑战', description: '不以技术挑战为主要取向，而是享受"化尴尬为笑点"的社交挑战。即使尝试失败，也能通过自我调侃（如"我这是艺术表演"）化解局面。' },
+          { name: '幽默', description: '表现为即兴发挥、强烈的语感、适度的自我调侃，且确保不冒犯他人。其幽默本质上是一种社交平衡术：一半是表演呈现，一半是对社交情境的深刻洞察。' }
+        ],
+        rarity: 38.0
+      },
+      'Team Supporter': {
+        name: '团队依赖户',
+        description: '团队依赖户是一种稳定型协作人格，他的核心动力不是赢，而是让所有人都能安心地一起走到终点。别人看到的是"他总在后面"，但他自己心里清楚：殿后不是落后，而是守着全队的安全感。这种人格的独特之处在于，他的专注点始终不在"我能多强"，而是"我们能多齐"。他会主动记住队友的节奏差异，在救援机制触发时第一个回头。表面温和，但其实这类人格的意志力非常坚韧。他们不会炫技，也很少高声表达，但当队伍出现混乱、队友掉线、节奏崩盘时，正是他们最容易站出来的时候。他们的"果断"常隐藏在安静里，心理层面上，他们从"被需要"与"维稳成功"中获得成就感。和偷跑Tee不共戴天。',
+        strengths: [
+          '稳定、有耐心',
+          '情绪管理优秀',
+          '善于协调与照顾他人',
+          '团队信任度高'
+        ],
+        improvements: [
+          '有时过于牺牲自己的利益',
+          '可能过于在意他人的看法',
+          '在冲突面前可能缺乏决断力',
+          '对自己的需求关注不够'
+        ],
+        motto: '我作为最后一个跳的人——不是因为慢，而是为了确保没人掉下去。',
+        rarityDescription: '他不是舞台中央的角色，却是让舞台灯一直亮着的人',
+        traits: [
+          { name: '社交', description: '温和、平衡型社交者，话少但句句有分量；能察觉氛围变化' },
+          { name: '责任', description: '"可靠担当"的代表；即使不是组织核心，也能被信任来收尾或救场' },
+          { name: '挑战', description: '更喜欢稳步推进而非冒险突破；他们的挑战是维持团队秩序，而不是突破极限' },
+          { name: '幽默', description: '幽默偏温和，常用轻描淡写的调侃缓解紧张，不是段子手，却很擅长让别人不尴尬' }
+        ],
+        rarity: 28.79
+      },
+      'Friend Collector': {
+        name: '扩列狂魔',
+        description: '“扩列狂魔”是典型的高社交驱动型人格（Social Energizer）。\n他的能量来源不是休息，而是与人互动的过程——聊天越多、氛围越活，越能激发他的创造力与心理满足。\n他享受社交的即时反馈，一句回复、一串表情、一个共鸣，都能让他获得强烈情绪正循环。\n核心心理机制：源于“被连接的自我认同”——他通过与他人建立联系，确认自身的存在价值。交流不是消遣，而是一种自我表达与情感交换的主阵地。\n代表性行为：主动扩列、频繁打招呼。使用大量表情包和轻松语气。对话风格灵动快节奏。\n容易成为群内热度中心或段子制造者。\n然而，活跃的背后也有一个隐性需求：害怕被忽视或冷场。他不希望连接断裂，因此容易过度活跃，但也可能在未被回应时陷入轻微失落。',
+        strengths: [
+          '擅长破冰，社交适应力强',
+          '给团队带来正向情绪与凝聚力',
+          '高表达力，能灵活应对多种语境',
+          '具强同理心，能察觉他人情绪细微变化'
+        ],
+        improvements: [
+          '能量波动大，容易因冷场或无回应感到失落',
+          '社交广但关系浅，深度连接不足',
+          '时间和注意力分散，易疲劳',
+          '有时会令安静型人格感到“社交压力过载”'
+        ],
+        motto: '朋友是游戏的乐趣',
+        rarity: 8.73,
+        rarityDescription: '那个用热度换温度的人，以聊天为能量构筑自己的存在感。',
+        traits: [
+          {
+            name: '社交',
+            description: '善于开场与延伸话题。极具亲和力与感染力。群体氛围的“发动机”。'
+          },
+          {
+            name: '责任',
+            description: '不关键控制流程，但关键维系温度。他让团队“有声、有笑、不冷场”。'
+          },
+          {
+            name: '挑战',
+            description: '勇于打破沉默，是天生的社交冒险者。'
+          },
+          {
+            name: '幽默',
+            description: '表情语言流畅自然。能用幽默建立安全感。'
+          }
+        ]
+      },
+      'Carry Goat': {
+        name: '带飞者',
+        description: '典型的主导型技术人格——以技术实力为核心自信来源，同时兼具指导欲与强烈的存在感需求。他喜欢掌握节奏，热爱解决"团队卡点"，在别人手里乱七八糟的部分，他一看就能找到解法，并且愿意亲自示范。但"带飞"这个操作，其实是他人格的一个舞台。在这个舞台上，他既是技术担当、也是气氛引导者。他享受被依赖、被信任的感觉，同时又怕别人太依赖他——那样就从"带飞"变成了"背负"。这种矛盾感，让他在游戏时显得既强势又有点可爱：一边嘴上说"你自己试试"，一边手又去"帮人飞过去"。"带飞大哥"心里其实很有秩序感，他喜欢掌控的不只是地图路线，还有人与人之间的协作节奏。当队友反复出错，他的第一反应不是放弃，而是想办法"优化流程"；但如果对方不听劝，他会感到挫败，因为在他看来"合作"应该建立在互相信任和执行上的。他不是为了炫技而炫技，而是想在帮助别人的过程中，证明自己在团队中的不可替代性。这是一种"技术化的温情"——外表是理性冷静的操作者，内核却是把团队当作自己作品的人。',
+        strengths: [
+          '技术过硬，有责任心',
+          '乐于助人，能带动团队氛围',
+          '思路清晰，行动果断',
+          '有一定组织和教学能力'
+        ],
+        improvements: [
+          '对他人容错率低，容易急躁',
+          '在失败或被质疑时容易防御性强',
+          '偶尔过度主导，忽视队友的体验',
+          '喜欢被称赞，容易因得失感失衡'
+        ],
+        motto: '救我全救了',
+        rarityDescription: '他是那个嘴上嫌你菜、心里却比你还想让你通关的人',
+        traits: [
+          { name: '社交', description: '外向中带点强势，嘴上损你一句、其实想帮你过关；喜欢群体氛围，但要有他能说上话的位置' },
+          { name: '责任', description: '责任心强，队伍掉链子他会主动补位；有事他扛着，但也容易因此累自己' },
+          { name: '挑战', description: '越难越兴奋，挑战是他展示价值的舞台；成功后往往心里暗爽，却假装云淡风轻' },
+          { name: '幽默', description: '嘴有点贫、梗多，喜欢用调侃化解尴尬；偶尔毒舌，但分寸感还在' }
+        ],
+        rarity: 7.67
+      },
+      'Confident Competitor': {
+        name: '装杯带师',
+        description: '“装杯带师”典型属于自我效能导向型人格（Self-efficacy Challenger）。\n他必须通过挑战与超越来验证自己的价值。\n不论是破记录、拿排名、比技巧，他都将这些行为视作一种“内在能力的外化表现”。\n具备极强的自我驱动力——不是为了炫耀，而是为了让“我能做到”这件事被看见。\n临危敢上，高压时输出稳定，用实力带节奏。',
+        strengths: [
+          '自信心强，抗压能力高',
+          '目标明确，执行力极强',
+          '领导气质明显，容易带动团队',
+          '善于策略与心理博弈，有决胜心态'
+        ],
+        improvements: [
+          '容易过度竞争或失衡',
+          '对他人能力评价苛刻，易显优越感',
+          '难接纳失败，恢复期偏长',
+          '社交中易被误解为“要面子”或“爱秀”'
+        ],
+        motto: '不装不知道自己有多强。',
+        rarity: 4.86,
+        rarityDescription: '以胜为信仰，用自信点燃挑战，用实力定义存在。',
+        traits: [
+          {
+            name: '社交',
+            description: '有话语权意识。喜欢引领，但也需要掌声反馈。与他人互动更偏展示型而非陪伴型。'
+          },
+          {
+            name: '责任',
+            description: '极度重视绩效与成果。对失败容忍低，但反思效率高。'
+          },
+          {
+            name: '挑战',
+            description: '乐于尝试未知极限。重视“权威认可”（如KOG排名、破记录）。困难越高兴致越高。'
+          },
+          {
+            name: '幽默',
+            description: '参考滑溜'
+          }
+        ]
+      },
+      'Self-Deprecating Humorist': {
+        name: '小丑竟是我',
+        description: '“小丑竟是我”人格属于情绪自解型人格\n他的自嘲不是低自尊的表现，而是一种社交防御机制 + 情绪适应策略。\n在不顺或出错时，他迅速用幽默包裹失误，把潜在的尴尬转化成笑点，从而重新掌握互动主导权。\n对他来说，自嘲是一种优雅的止损方式，也是守护心理安全感的高阶技能,他懂得让失败看起来“有趣”，而不是“挫败”，这让他在社交中非常受欢迎。\n核心心理机制：源于“情绪转换能力”——他能在遭遇否定、事故、失误时迅速重组语气与情绪，把潜在的负面反馈转成轻松笑料。\n这种自嘲幽默让人对他的错误产生共鸣而不是批评，但极度的自嘲有时会成为别人的笑话。',
+        strengths: [
+          '极高的情绪智商，缓场能力强',
+          '社交氛围制造能力优秀',
+          '心态灵活，不沉溺于负面',
+          '自知力强，羞辱转化率高'
+        ],
+        improvements: [
+          '过度自嘲易让他人轻视其真实能力',
+          '内在自尊可能随幽默被轻轻掩盖',
+          '遇到严肃场景时可能被误解为“不认真”',
+          '若长期缺少真诚表达，容易陷入“假轻松状态”'
+        ],
+        motto: '笑着犯错，总比沉默尴尬要体面。',
+        rarity: 3.73,
+        rarityDescription: '骗骗哥们得了，别把自己也骗了',
+        traits: [
+          {
+            name: '社交',
+            description: '善于察觉氛围。反应迅速、懂得自降身位以保全集体情绪。通常被视为“好相处”的存在。'
+          },
+          {
+            name: '责任',
+            description: '不逃避，但也不正面刚。用幽默承担责任，化解团队不满。'
+          },
+          {
+            name: '挑战',
+            description: '他不主动追求高难度挑战，但特别擅长面对失败后的心理修复。在挑战失利后，他能快速自我恢复，不陷入扭曲或沮丧。'
+          },
+          {
+            name: '幽默',
+            description: '幽默中体现自觉。玩笑有深度，带修复力。'
+          }
+        ]
+      },
+      'Responsible Anchor': {
+        name: '背锅侠',
+        description: '“背锅侠”是团队生态中那种稳压缓冲型人格。\n他不追求光环，也不争论功劳；当队友操作错误、节奏失衡、局势崩坏时，他总是那个立即补位、擦屁股、重建秩序的人。\n他不一定技术最强、判断最精确，但拥有持续承压的耐久属性。\n与“团队依赖户”不同的是，背锅侠不是被动依附于队伍，而是主动“为团队兜底”。他不是害怕失误，而是宁愿自己多挨一顿骂，也不让别人掉坑。这种人格的底层逻辑，是将牺牲与稳定视作同一件事的成熟。\n“背锅侠”的根源动机是稳定他人，才能稳定自己。\n他通过承担别人的混乱，来换取队伍的秩序感，也让自己感觉有价值。\n这种情感逻辑带有哲学上的“代偿性牺牲”：他相信世界不一定会照顾自己，所以他先学会照顾世界。\n心理层面，他是悲悯型理性者，带有轻微的“逆向成就感”——当别人出错，他心中会升起一种“没事，我来补”的平静自豪。',
+        strengths: [
+          '强烈的团队责任心与韧性',
+          '出色的局势感知和补位反应',
+          '极善“退一步成全团队”',
+          '情绪稳定性高，精于逆风抗压'
+        ],
+        improvements: [
+          '易陷入“超负责任”模式，被动背锅',
+          '长期积压情绪，容易心理疲惫',
+          '自我表达欲弱，成就感缺乏',
+          '过分克制，可能被视为理所当然'
+        ],
+        motto: '我不怕背锅，只怕最后没人能接着往前走。',
+        rarity: 3.67,
+        rarityDescription: '不管多乱都能把残局收拾好的人，用行动替团队稳住节奏，但出意外了可不背这个锅。',
+        traits: [
+          {
+            name: '社交',
+            description: '不主动亮相，但随时接盘。社交中维系“功能性关系”而非“装饰性关系”。能消化负面情绪，保持团队稳定。对外温和，对内坚毅，是团队的“情绪缓冲器”。'
+          },
+          {
+            name: '责任',
+            description: '对团队稳定的关注高于个人情绪。倾向于内化他人过失，对集体损失有强烈补偿欲。极其可靠，但也极易疲惫。'
+          },
+          {
+            name: '挑战',
+            description: '逆境反应能力强，临场判断快。敢在他人退缩时出手。用冷静的思考驾驭不稳定的局势。'
+          },
+          {
+            name: '幽默',
+            description: '以轻微自嘲化解现场紧张。善用简短、逻辑感强的反讽。不制造笑点，只释放安全感。幽默常带一点“稳哥气质”，让人信任。'
+          }
+        ]
+      },
+      'Rational Thinker': {
+        name: '策略大师',
+        description: '"策略大师"是一类理性型思维人格，擅长在复杂局势中冷静地找出可行路径。别人慌乱时，他在思考是否值得救人；风险系数是多少；哪段操作能最小化风险。他属于那种即使局面几乎崩溃，也仍然能沉着判定、精确操作的玩家。策略大师的冷静不是低温，而是一种专注的秩序感——他相信混乱中必有逻辑，只要找到那条逻辑链，就能化解风险。他通常是队伍里的"看图脑"，悄悄把地图结构与队员特性编织进自己的决策系统。"策略大师"的本质驱动力是控制复杂性的能力欲望。他不追求炫技，也不追求主角光环，而是追求"体系稳定"的安全感。在他眼中，一个团队的真正实力不是操作有多快，而是是否能在突发中保持节奏——这就是他擅长营造的秩序。哲学层面上，他代表的是理性克服混沌的力量——在变化最大的时候，恰恰是理性最具价值的时候。',
+        strengths: [
+          '分析能力强，善于分析游戏机制',
+          '战略思维突出，能够制定最优策略',
+          '理性冷静，善于思考',
+          '在关键时刻做出正确的决策'
+        ],
+        improvements: [
+          '可能过于理性，缺乏情感考虑',
+          '对团队成员的感受关注不够',
+          '在执行层面可能缺乏耐心',
+          '可能过于注重策略，忽视游戏的乐趣'
+        ],
+        motto: '冷静不是慢，而是让每一步都在计算内',
+        rarityDescription: '以理性为刃，以秩序为心，相信洞察混乱本身，就是在掌控命运的方式。',
+        traits: [
+          { name: '社交', description: '克制、分析、简洁。讲话有层次，重结论不重感情。对他而言，语言是传递决策，而非表达情绪。可能显得"冷漠"，但他真正关心的是"局势效益"，不是表面互动。' },
+          { name: '责任', description: '高责任心但理性权衡。不会盲目担当，也不会逃避。他认为帮助别人也要讲"效率"，以团队整体收益为最高优先。' },
+          { name: '挑战', description: '偏好多变量复杂场景，比如KOG模式下的救人、分流、路线优化。他享受的不仅是成功，而是"推理出最优节奏"的过程。' },
+          { name: '幽默', description: '稳定如算法，鲜少波动。能在混乱中保持判断精度，是团队危机时最可靠的轴心。' }
+        ],
+        rarity: 2.12
+      },
+      'Balanced Player': {
+        name: '中立者',
+        description: '“中立者”人格核心是弹性与判断力。\n他不追求控制也不盲目跟随，而是在多种可能中寻找动态平衡点。\n他的心态像一个稳定器：不被极端带跑，也不需要绝对中心，只要环境能运行，他就能找到自己的节奏。\n对他而言，没有单一的“正确答案”，而是环境与目标变化下的最优解。\n他能同时看到不同立场的合理性，这让他在讨论与合作中极少陷入非黑即白对抗。\n在群体或团队场景中，“中立者”是天然的调和者。\n他擅长整合不同性格的意见，让冲突降低，让合作顺畅。',
+        strengths: [
+          '适应力极强，可快速融入任何团队或环境',
+          '决策权衡全面，失误率低',
+          '社交氛围稳定，能减少冲突',
+          '拥有良好的格局思维，能从整体判断利弊'
+        ],
+        improvements: [
+          '缺乏鲜明个性，容易被视为“没主见”',
+          '长期中立可能导致存在感降低',
+          '对情绪浓度低的人，表达显得不够有温度',
+          '决断时可能耗时较长，因过于评估多方因素'
+        ],
+        motto: '近朱者赤，近墨者黑',
+        rarity: 0.70,
+        rarityDescription: '世界不会只有一种答案，我只选合适的那一个',
+        traits: [
+          { name: '社交', description: '避免极端表态\n善于倾听\n用理性维持人际温度' },
+          { name: '责任', description: '不冲动\n稳定踏实\n重视整体成效' },
+          { name: '挑战', description: '行动前规划\n不急不躁\n变化中求稳而不死板' },
+          { name: '幽默', description: '社交笑点低调柔和\n善用语气转柔冲突\n是“温和智慧”式幽默者' }
+        ]
+      },
+      'Bald Grinder': {
+        name: '独攀者',
+        description: '"独攀者"的世界是一条向上延伸的斜坡。他并不是拒绝他人，而是相信努力的本质只有个人能承担。他对自己技术的信任是一种"硬核信念系统"。他知道进步是量变，但只有自己能制造那个量。因此，他不依赖外部鼓励，不需要团队节奏，只要能看到微小提升，他就能自我驱动到凌晨。他的自我实现路径完全是一种技术沉浸式修行。但在长远框架中，"独攀者"若能稍微接纳他人视角，就能把这种极致的专注转化为更广层面的创造力。否则，他可能成为那个站得最高却看不到其他人的人。',
+        strengths: [
+          '超强自律与深度专注力',
+          '技术成长极快，学习曲线陡峭',
+          '抗压能力高，失败不易动摇',
+          '自信，不依赖他人'
+        ],
+        improvements: [
+          '社交断层明显，难形成共情',
+          '执念过深时易陷入过度自我消耗',
+          '缺乏团队回馈感，孤立风险高',
+          '对外部评价麻木，可能失去合作乐趣'
+        ],
+        motto: '我不需要掌声，只要知道，这一钩我比昨天稳了一格水。',
+        rarityDescription: '以孤独为路，以极限为镜，相信真正的高处一定能亲手抵达。',
+        traits: [
+          { name: '社交', description: '偏向孤力实践。能礼貌交流，但少主动互动；他把社交视为"干扰专注"的外部变量。真正赢得他尊重的，是能理解他技术执念的人，而不是闲聊的"队友关系"' },
+          { name: '责任', description: '对别人缺乏义务感，但对自己极度负责。他不会让自己随便放弃、也不会怪别人,他只会在心里对自己说："我还不够好。"' },
+          { name: '挑战', description: '几乎是"纯挑战人格"的原型。热衷对抗难度、复盘失败；成就感完全来源于技术突破。' },
+          { name: '幽默', description: '近乎无幽默，他的"幽默"更多是一种冷淡的自嘲。' }
+        ],
+        rarity: 0.54
+      },
+      'Rusher': {
+        name: '偷跑Tee',
+        description: '个人主义偷跑，忽略团队，在KOG模式中常见，刷记录为主，跑图为辅，喜欢单刷和偷跑的一类Tee，死了队友救，醒了直接跑。',
+        strengths: [
+          '破点成功可帮助队友跳关',
+          '一般偷跑Tee为高手或低手，易于分辨其水平',
+          '某种程度上加快队伍步伐',
+          '锻炼队友抗压能力'
+        ],
+        improvements: [
+          '可能过于个人主义，忽视团队',
+          '对团队的贡献可能不够',
+          '在需要合作的任务中可能缺乏耐心',
+          '对他人的感受可能关注不够'
+        ],
+        motto: '偷跑一时爽，一直偷跑一直爽',
+        rarity: 0.35,
+        rarityDescription: '一把游戏换了无数次队伍',
+        traits: [
+          { name: '社交', description: '偷跑需要专注，排除一切外界因素' },
+          { name: '责任', description: '我不吃压力' },
+          { name: '挑战', description: '最吃手感的一集' },
+          { name: '幽默', description: '别艾特我发坐下，我会紧张' }
+        ]
+      },
+      'Lying Flat Fish': {
+        name: '躺平咸鱼',
+        description: '“躺平咸鱼”不追求高难度突破，却也不把自己关在沉默里。\n他会和队友保持适度互动、做出相对稳妥的选择，尽量不让气氛尴尬。\n但自信偏低让他不太敢在关键难点上承担主角位——更倾向跟随、配合、稳稳过图。\n他不是摆烂，而是“怕拖累别人”，所以选择更保守的路线。',
+        strengths: [
+          '社交适中，懂得礼貌与分寸',
+          '做事稳妥，风险意识强',
+          '不易制造冲突，团队相处舒适',
+          '能在合作中保持稳定节奏'
+        ],
+        improvements: [
+          '遇到高难挑战容易退缩',
+          '自信不足时会低估自己的能力',
+          '关键时刻不敢站出来承担职责',
+          '过度求稳可能错过成长机会'
+        ],
+        motto: '稳一点没错，但别把自己也稳没了',
+        rarity: 0.15,
+        rarityDescription: '你不是不行，你只是太怕给别人添麻烦',
+        traits: [
+          { name: '社交', description: '适度互动，能接话也能保持边界，不冷场但不抢镜' },
+          { name: '自信', description: '更容易自我怀疑，倾向把功劳让给别人，把压力留给自己' },
+          { name: '挑战', description: '偏向回避高难，重视稳定通关；需要安全感来推动尝试' },
+          { name: '决策', description: '倾向保守决策，先评估再行动，宁愿慢一点也不想翻车' }
+        ]
+      },
+      'Challenge Avoider': {
+        name: '摆烂仙人',
+        description: '“摆烂仙人”属于一种超脱型回避人格，他可以清楚感知压力，但并不对抗。在卡关时，他选择不硬撑、不纠结，以随缘代替死磕，这种心态表面散漫，实际上是一种极端理智后的松弛哲学。核心心理机制：源于认知层面的“控制边界意识”——他明白自己无法掌控所有变量，因此主动降低投入度，这是一种“保心态型智慧”，也是对内耗的自我防御方式，常见于Kog last之后主动要求Swap。',
+        strengths: [
+          '适应性强，能够调整策略',
+          '心态平和，不太在意困难',
+          '能够找到适合自己的游戏方式',
+          '在简单任务中表现稳定'
+        ],
+        improvements: [
+          '可能过于回避挑战，缺乏成长',
+          '对团队的贡献可能不够',
+          '在需要坚持的任务中可能缺乏耐心',
+          '对技术水平的提升可能不够重视'
+        ],
+        motto: '能不卷就不卷，命里有时终须有，命里无时摆到头。',
+        rarity: 0.04,
+        rarityDescription: '那个以淡然拒绝内耗的人，用摆的姿态活出洒脱，用放弃换来内心平衡。',
+        traits: [
+          {
+            name: '社交',
+            description: '人缘不错，因为他“不卷”。与强势人格配合时，常成为情绪调节阀。'
+          },
+          {
+            name: '责任',
+            description: '不承担无效责任。对团队大局保持礼貌但不深度介入。'
+          },
+          {
+            name: '挑战',
+            description: '拒绝硬杠，不惧放弃。将失败视为人生素材，而非个人缺陷。'
+          },
+          {
+            name: '幽默',
+            description: '幽默中带哲思。不求被理解，只求不被影响。'
+          }
+        ]
+      },
+      'Emotional Player': {
+        name: '键盘粉碎者',
+        description: '“键盘粉碎者”属于情绪驱动型人格（Emotion Reactor），他不是理性地回应刺激，而是直接以感受冲击反馈。\n在情绪曲线上，他的起伏极陡——快乐爆棚、愤怒失控、失误时体感放大十倍。\n他的行为逻辑不是“我该怎么做”，而是“我现在感觉怎么样”，因此在游戏或竞争场景中，一旦输出不达预期，他的反应强烈到接近本能冲击。\n核心心理机制：源于“控制欲 + 情绪外倾”，他渴望掌控局面，但局势无法被掌控时，就通过情绪爆发夺回心理支配权。',
+        strengths: [
+          '激情驱动，执行迅速',
+          '集中度极高，一旦顺风可超常发挥',
+          '真性情，表达直接，不做表面伪装',
+          '对目标专注且投入度极强'
+        ],
+        improvements: [
+          '情绪不稳，影响团队氛围',
+          '容易冲动，事后懊悔',
+          '过度聚焦自我感受，忽略他人反应',
+          '心理恢复期长，难重启'
+        ],
+        motto: '我不是生气，我只是太想赢',
+        rarity: 0.02,
+        rarityDescription: '被情绪支配的战士，用愤怒证明热情，用爆发宣示执着',
+        traits: [
+          { name: '社交', description: '有直接沟通的优点，但缺乏缓冲；他人对其反应常是“又来了”；社交中高存在，但低稳定' },
+          { name: '责任', description: '对己苛，对他人也苛；事后常懊悔或补偿性道歉；内心有责任意识，但表达是怒火' },
+          { name: '挑战', description: '需要情绪燃料来驱动行动；表现随心情波动，大起大落；在危机时可能成为“暴力领袖”型人物' },
+          { name: '幽默', description: '爆后冷静型幽默，像强行重启的笑；幽默有替罪感：借它化解愧疚' }
+        ]
+      }
+    };
+
+    // 全局变量
+    let currentResult = null;
+    let currentType = 'ISTJ';
+    
+    // 返回首页并解锁人格
+    function returnToHomeWithUnlock() {
+      console.log('返回首页，当前人格类型:', currentType);
+      if (currentType) {
+        // 从URL参数获取答题内容
+        const urlParams = new URLSearchParams(window.location.search);
+        const answers = urlParams.get('answers');
+        // 带上unlocked参数和答题内容跳转到首页
+        if (answers) {
+          window.location.href = `index.html?unlocked=${encodeURIComponent(currentType)}&answers=${encodeURIComponent(answers)}`;
+        } else {
+          window.location.href = `index.html?unlocked=${encodeURIComponent(currentType)}`;
+        }
+      } else {
+        // 如果没有type参数，直接跳转到首页
+        window.location.href = 'index.html';
+      }
+    }
+
+    // 初始化报告查看功能
+    function initReportGeneration() {
+      console.log('Initializing report viewing...');
+      
+      // 等待DOM加载完成
+      setTimeout(function() {
+        const downloadImageBtn = document.getElementById('downloadImage');
+        
+        console.log('Download image button:', downloadImageBtn);
+        
+        // 下载报告按钮点击事件
+        if (downloadImageBtn) {
+          downloadImageBtn.onclick = function() {
+            console.log('Download report button clicked!');
+            
+            // 生成图片文件名（将人格名称转换为对应的图片文件名格式）
+            let imageName = currentResult.name;
+            if (imageName === '偷跑Tee') {
+              imageName = '偷跑tee';
+            }
+            // 跳转到图片查看器页面，添加入屏动画
+            const imagePath = `images/${imageName}.png`;
+            window.location.href = `personality_image_viewer.html?image=${encodeURIComponent(imagePath)}`;
+          };
+        } else {
+          console.error('Download button not found!');
+        }
+      }, 500);
+    }
+
+    // 人格类型到背景图片的映射
+    const personalityBackgroundMap = {
+      'Jokester': '24.png',                // 整活艺术家
+      'Team Supporter': '22.png',           // 团队依赖户
+      'Friend Collector': '14.png',         // 扩列狂魔
+      'Carry Goat': '21.png',               // 带飞者
+      'Confident Competitor': '17.png',     // 装杯带师
+      'Emotional Player': '16.png',         // 小丑竟是我
+      'Responsible Anchor': '19.png',       // 背锅侠
+      'Rational Thinker': '12.png',         // 策略大师
+      'Balanced Player': '15.png',          // 中立者
+      'Bald Grinder': '20.png',             // 独攀者
+      'Rusher': '11.png',                   // 偷跑Tee
+      'Lying Flat Fish': '23.png',          // 躺平咸鱼
+      'Challenge Avoider': '10.png',        // 摆烂仙人
+      'Keyboard Crusher': '18.png'          // 键盘粉碎者
+    };
+
+    // 初始化页面
+    function init() {
+      console.log('Initializing page...');
+      // 从URL参数获取结果类型
+      const urlParams = new URLSearchParams(window.location.search);
+      let type = urlParams.get('type') || 'Balanced Player';
+      // 兼容旧 key（历史链接）
+      if (type === 'Cautious Socializer') type = 'Lying Flat Fish';
+      
+      // 加载结果
+      currentType = type;
+      currentResult = ddnetTypes[type];
+      
+      if (currentResult) {
+        // 设置背景图片
+        const backgroundImage = personalityBackgroundMap[type];
+        if (backgroundImage) {
+          const body = document.body;
+          body.style.backgroundImage = `url('images/${backgroundImage}')`;
+          body.style.backgroundSize = 'cover';
+          body.style.backgroundPosition = 'center';
+        }
+        
+        // 更新基本信息
+        const resultTypeEl = document.getElementById('resultType');
+        const resultNameEl = document.getElementById('resultName');
+        const resultDescriptionEl = document.getElementById('resultDescription');
+        const rarityPercentageEl = document.getElementById('rarityPercentage');
+        const rarityBarEl = document.getElementById('rarityBar');
+        const rarityDescriptionEl = document.getElementById('rarityDescription');
+        const mottoEl = document.getElementById('motto');
+        const strengthsListEl = document.getElementById('strengthsList');
+        const improvementsListEl = document.getElementById('improvementsList');
+        const traitsGridEl = document.getElementById('traitsGrid');
+        
+        if (resultTypeEl) resultTypeEl.textContent = type;
+        if (resultNameEl) resultNameEl.textContent = currentResult.name;
+        
+        // 处理人格介绍，将长文本分段显示（保持不变）
+        if (resultDescriptionEl) {
+          const description = currentResult.description;
+          // 优先按换行符分段，否则按句号分段
+          let paragraphs = [];
+          if (description.includes('\n')) {
+            paragraphs = description.split('\n').filter(s => s.trim());
+          } else {
+            paragraphs = description.split(/(?<=[。！？.!?])\s*/).filter(s => s.trim());
+          }
+          
+          let descriptionHTML = '';
+          if (paragraphs.length > 0) {
+            // 多段落
+            for (let i = 0; i < paragraphs.length; i++) {
+              if (i === 0) {
+                descriptionHTML += `<p>${paragraphs[i].trim()}</p>`;
+              } else {
+                descriptionHTML += `<p class="mt-4">${paragraphs[i].trim()}</p>`;
+              }
+            }
+          } else {
+            // 单段落
+            descriptionHTML = `<p>${description}</p>`;
+          }
+          resultDescriptionEl.innerHTML = descriptionHTML;
+        }
+        
+        // 更新获取概率
+        if (rarityPercentageEl) rarityPercentageEl.textContent = currentResult.rarity + '%';
+        if (rarityBarEl) rarityBarEl.style.setProperty('--progress-width', currentResult.rarity + '%');
+        if (rarityDescriptionEl) {
+          // 检查是否有自定义的获取概率描述
+          if (currentResult.rarityDescription) {
+            // 移除所有句号（包括中文和英文）
+            const rarityDesc = currentResult.rarityDescription.replace(/[。.]/g, '');
+            rarityDescriptionEl.textContent = rarityDesc;
+          } else {
+            // 移除所有句号（包括中文和英文）
+            const defaultDesc = `你是人群中仅有的${currentResult.rarity}%，具有独特的人格特质`;
+            rarityDescriptionEl.textContent = defaultDesc.replace(/[。.]/g, '');
+          }
+        }
+        
+        // 更新座右铭
+        if (mottoEl) {
+          // 移除所有句号（包括中文和英文）
+          const motto = currentResult.motto.replace(/[。.]/g, '');
+          mottoEl.textContent = `"${motto}"`;
+        }
+        
+        // 更新优势
+        if (strengthsListEl) {
+          strengthsListEl.innerHTML = '';
+          currentResult.strengths.forEach(strength => {
+            // 移除所有句号（包括中文和英文）
+            const strengthText = strength.replace(/[。.]/g, '');
+            const li = document.createElement('li');
+            li.className = 'flex items-start gap-2';
+            li.innerHTML = `
+              <i class="fa fa-angle-right text-green-500 mt-1"></i>
+              <span class="leading-relaxed">${strengthText}</span>
+            `;
+            strengthsListEl.appendChild(li);
+          });
+        }
+        
+        // 更新待提升
+        if (improvementsListEl) {
+          improvementsListEl.innerHTML = '';
+          currentResult.improvements.forEach(improvement => {
+            // 移除所有句号（包括中文和英文）
+            const improvementText = improvement.replace(/[。.]/g, '');
+            const li = document.createElement('li');
+            li.className = 'flex items-start gap-2';
+            li.innerHTML = `
+              <i class="fa fa-angle-right text-amber-500 mt-1"></i>
+              <span class="leading-relaxed">${improvementText}</span>
+            `;
+            improvementsListEl.appendChild(li);
+          });
+        }
+        
+        // 更新特质
+        if (traitsGridEl) {
+          traitsGridEl.innerHTML = '';
+          // 检查是否有自定义的特质
+          const traits = currentResult.traits || [
+            { name: '社交', description: '在游戏中与他人互动的方式和倾向' },
+            { name: '责任', description: '对团队和游戏任务的责任感和承诺' },
+            { name: '挑战', description: '面对游戏困难和挑战的态度和应对方式' },
+            { name: '幽默', description: '在游戏中的幽默感和娱乐精神' }
+          ];
+          traits.forEach(trait => {
+            // 移除所有句号（包括中文和英文）
+            const traitDesc = trait.description.replace(/[。.]/g, '');
+            const div = document.createElement('div');
+            div.className = 'bg-primary bg-opacity-10 p-5 rounded-xl text-center transition-all duration-300 hover:bg-opacity-20 hover:scale-105';
+            div.innerHTML = `
+              <h5 class="font-semibold mb-2">${trait.name}</h5>
+              <p class="text-sm text-gray-600 leading-relaxed">${traitDesc}</p>
+            `;
+            traitsGridEl.appendChild(div);
+          });
+        }
+      }
+      
+      // 初始化报告生成功能
+      initReportGeneration();
+    }
+
+    // 保存用户人格数据到本地存储
+    function saveUserPersonalityData(type) {
+      // 获取用户的游戏ID
+      const gameId = localStorage.getItem('gameId') || '';
+      
+      // 生成随机用户名
+      const randomNames = ['快乐的Tee', '勇敢的Runner', '聪明的Strategist', '幽默的Joker', '可靠的Supporter', '自信的Challenger', '冷静的Thinker', '独立的Grinder', '友善的Collector', '机智的Anchor'];
+      const randomName = randomNames[Math.floor(Math.random() * randomNames.length)] + Math.floor(Math.random() * 1000);
+      
+      // 创建用户数据对象
+      const userData = {
+        id: Date.now(),
+        name: randomName,
+        gameId: gameId,
+        personality: type,
+        timestamp: new Date().toISOString(),
+        avatar: Math.floor(Math.random() * 26) + 65 // 生成A-Z的ASCII码
+      };
+      
+      // 从本地存储获取现有用户数据
+      const existingUsers = JSON.parse(localStorage.getItem('personalityUsers') || '[]');
+      
+      // 添加新用户数据
+      existingUsers.push(userData);
+      
+      // 限制用户数据数量，只保留最近100个
+      const limitedUsers = existingUsers.slice(-100);
+      
+      // 保存回本地存储
+      localStorage.setItem('personalityUsers', JSON.stringify(limitedUsers));
+      console.log('User personality data saved:', userData);
+    }
+
+    // 页面加载完成后执行
+    window.addEventListener('DOMContentLoaded', function() {
+      console.log('DOM content loaded');
+      
+      // 从URL参数获取结果类型
+      const urlParams = new URLSearchParams(window.location.search);
+      const type = urlParams.get('type') || 'Balanced Player';
+      
+      // 检查是否是新的测试结果（通过检查URL参数）
+      const answers = urlParams.get('answers');
+      console.log('URL parameters - type:', type, 'answers:', answers);
+      
+      // 如果有answers参数，说明是刚答完题，重置报告状态并保存用户数据
+      if (answers) {
+        console.log('New test completed, resetting report status and saving user data');
+        localStorage.removeItem('reportGenerated_' + type);
+        // 保存用户人格数据
+        saveUserPersonalityData(type);
+      }
+      
+      // 初始化页面
+      init();
+      
+      // 延迟检查，确保所有元素都已加载
+      setTimeout(function() {
+        console.log('Checking download button visibility...');
+        const downloadImageBtn = document.getElementById('downloadImage');
+        if (downloadImageBtn) {
+          console.log('Download button found:', downloadImageBtn);
+          console.log('Current type:', currentType);
+          // 查看报告按钮已常驻显示，无需检查生成状态
+          console.log('Download button is always visible');
+        } else {
+          console.error('Download button not found!');
+        }
+        }, 1000);
+    });
+  </script>
+</body>
+</html>

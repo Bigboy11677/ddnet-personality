@@ -1,0 +1,2471 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DDnet人格测试</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  
+  <!-- 自定义配置 -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#0052D9',
+            secondary: '#FF6B8B',
+            accent: '#FFD93D',
+            dark: '#2C3E50',
+            light: '#F8F9FA'
+          },
+          fontFamily: {
+            sans: ['PingFang SC', 'Microsoft YaHei', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .text-shadow-sm {
+        text-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      }
+      .text-shadow-md {
+        text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      }
+      .text-shadow-lg {
+        text-shadow: 0 4px 8px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.08);
+      }
+      .btn-shadow {
+        box-shadow: 0 8px 20px rgba(0, 82, 217, 0.25);
+      }
+      .btn-hover {
+        transition: all 0.3s ease;
+      }
+      .btn-hover:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 25px rgba(0, 82, 217, 0.3);
+      }
+      .card-shadow {
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      }
+      .moe-gradient {
+        background: linear-gradient(135deg, #0052D9, #4A90E2);
+      }
+      .line-height-relaxed {
+        line-height: 1.6;
+      }
+    }
+  </style>
+  
+  <style>
+    /* 全局基础样式 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: "PingFang SC", "Microsoft YaHei", "思源黑体", sans-serif;
+      line-height: 1.6;
+      color: #333;
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
+      scroll-behavior: smooth;
+    }
+    
+    /* 响应式设计 */
+    @media (max-width: 768px) {
+      /* 主容器调整 */
+      main {
+        padding: 1rem 0.75rem;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+      }
+      
+      .moe-logo {
+        transform: scale(0.7);
+      }
+      
+      .feature-card {
+        margin-bottom: 0.75rem;
+      }
+      
+      /* 标题调整 */
+      h1.text-5xl {
+        font-size: 1.5rem;
+        margin-bottom: 0.75rem;
+      }
+      
+      h2.text-2xl {
+        font-size: 1.15rem;
+        margin-bottom: 0.75rem;
+      }
+      
+      /* 卡片调整 */
+      .max-w-3xl {
+        max-width: 100%;
+      }
+      
+      .bg-white.bg-opacity-90.rounded-2xl.p-8 {
+        padding: 1rem;
+        margin-bottom: 1rem;
+      }
+      
+      /* 按钮调整 */
+      #startTest {
+        font-size: 1rem;
+        padding: 0.6rem 1.2rem;
+        min-height: 48px;
+        width: 100%;
+        max-width: 260px;
+      }
+      
+      #openCollection, #openHistory, #returnToResult {
+        font-size: 0.75rem;
+        padding: 0.5rem 1rem;
+        min-height: 40px;
+        width: 100%;
+        max-width: 260px;
+      }
+      
+      /* 按钮布局 */
+      .flex.flex-col.sm\:flex-row {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 1.5rem;
+        margin-bottom: 2rem;
+      }
+      
+      /* 模态框调整 */
+      #collectionModal .max-w-6xl,
+      #historyModal .max-w-4xl {
+        max-width: 95vw;
+        max-height: 90vh;
+      }
+      
+      /* 图鉴网格调整 */
+      #collectionGrid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.4rem;
+      }
+      
+      /* 图鉴卡片文本调整 */
+      #collectionGrid .text-sm {
+        font-size: 0.7rem;
+      }
+      
+      #collectionGrid .text-xs {
+        font-size: 0.6rem;
+      }
+      
+      /* 图鉴卡片居中调整 */
+      #collectionGrid .relative.p-4 {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+      }
+      
+      /* 概率等级调整 */
+      #rarityLevels {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 0.5rem !important;
+        justify-content: center !important;
+        align-items: center !important;
+      }
+      
+      #rarityLevels .flex.items-center.gap-2 {
+        white-space: nowrap !important;
+        justify-content: center !important;
+      }
+      
+      /* 详情模态框调整 */
+      #personalityDetailModal .max-w-xl {
+        max-width: 90vw;
+      }
+      
+      /* 人格详情内容调整 */
+      #personalityDetailModal .flex.items-center.gap-3 {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.75rem;
+      }
+      
+      #personalityDetailModal .w-16.h-16 {
+        width: 56px;
+        height: 56px;
+        object-fit: contain;
+      }
+      
+      #personalityDetailModal .font-bold {
+        font-size: 1rem;
+      }
+      
+      #personalityDetailModal .text-sm {
+        font-size: 0.75rem;
+      }
+      
+      #personalityDetailModal .text-gray-700 {
+        font-size: 0.8rem;
+        line-height: 1.3;
+        text-align: center;
+      }
+      
+      /* 人格详情内容调整 */
+      #personalityDetailModal .flex.items-center.gap-3 {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+      }
+      
+      #personalityDetailModal .w-16.h-16 {
+        width: 64px;
+        height: 64px;
+        object-fit: contain;
+      }
+      
+      #personalityDetailModal .font-bold {
+        font-size: 1.1rem;
+      }
+      
+      #personalityDetailModal .text-sm {
+        font-size: 0.8rem;
+      }
+      
+      #personalityDetailModal .text-gray-700 {
+        font-size: 0.85rem;
+        line-height: 1.4;
+      }
+      
+      /* 关闭按钮调整 */
+      #closeCollection, #closeDetail, #closeHistory {
+        font-size: 1.25rem;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      /* 图鉴卡片调整 */
+      #collectionGrid .relative.p-4 {
+        min-height: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      /* 测试介绍和流程调整 */
+      .text-gray-700.leading-relaxed.text-center p {
+        font-size: 0.75rem;
+        line-height: 1.3;
+        margin-bottom: 0.5rem;
+      }
+      
+      /* 流程步骤调整 */
+      .flex.items-start.gap-4 {
+        margin-bottom: 0.75rem;
+      }
+      
+      .flex.items-start.gap-4 h3 {
+        font-size: 0.8rem;
+        margin-bottom: 0.2rem;
+      }
+      
+      .flex.items-start.gap-4 p {
+        font-size: 0.7rem;
+        line-height: 1.3;
+      }
+      
+      /* 标题部分调整 */
+      .text-center.mb-16 {
+        margin-bottom: 2rem;
+      }
+      
+      /* 测试介绍和流程模块调整 */
+      .max-w-3xl.w-full.mb-16 {
+        margin-bottom: 1.5rem;
+      }
+      
+      /* 右下角水印调整 */
+      .fixed.bottom-4.right-4 {
+        position: fixed;
+        bottom: 0.5rem;
+        right: 0.5rem;
+        margin: 0;
+        width: auto;
+        max-width: none;
+        text-align: center;
+        transform: scale(0.5);
+        transform-origin: bottom right;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      /* 更小屏幕的调整 */
+      h1.text-5xl {
+        font-size: 1.35rem;
+      }
+      
+      h2.text-2xl {
+        font-size: 1rem;
+      }
+      
+      h3 {
+        font-size: 0.8rem;
+      }
+      
+      p {
+        font-size: 0.7rem;
+        line-height: 1.3;
+      }
+      
+      /* 卡片内边距调整 */
+      .bg-white.bg-opacity-90.rounded-2xl.p-8 {
+        padding: 0.75rem;
+      }
+      
+      /* 图鉴网格调整 */
+      #collectionGrid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.3rem;
+      }
+      
+      /* 图鉴卡片文本调整 */
+      #collectionGrid .text-sm {
+        font-size: 0.65rem;
+      }
+      
+      #collectionGrid .text-xs {
+        font-size: 0.55rem;
+      }
+      
+      /* 图鉴卡片居中调整 */
+      #collectionGrid .relative.p-4 {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+      }
+      
+      /* 概率等级调整 */
+      #rarityLevels {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 0.4rem !important;
+        justify-content: center !important;
+        align-items: center !important;
+      }
+      
+      #rarityLevels .flex.items-center.gap-2 {
+        white-space: nowrap !important;
+        justify-content: center !important;
+      }
+      
+      /* 人格详情内容调整 */
+      #personalityDetailModal .flex.items-center.gap-3 {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.75rem;
+      }
+      
+      #personalityDetailModal .w-16.h-16 {
+        width: 56px;
+        height: 56px;
+        object-fit: contain;
+      }
+      
+      #personalityDetailModal .font-bold {
+        font-size: 1rem;
+      }
+      
+      #personalityDetailModal .text-sm {
+        font-size: 0.75rem;
+      }
+      
+      #personalityDetailModal .text-gray-700 {
+        font-size: 0.8rem;
+        line-height: 1.3;
+      }
+    }
+    
+    /* 相同人格用户网格响应式设计 */
+    @media (max-width: 768px) {
+      #samePersonalityUsers {
+        grid-template-columns: repeat(5, 1fr) !important;
+        gap: 0.5rem !important;
+      }
+      
+      .user-card {
+        padding: 0.5rem !important;
+      }
+      
+      .user-name {
+        font-size: 0.65rem !important;
+        margin-bottom: 0.25rem !important;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      
+      .user-avatar {
+        width: 24px !important;
+        height: 24px !important;
+        font-size: 0.75rem !important;
+      }
+      
+      .user-personality {
+        font-size: 0.6rem !important;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+    
+    @media (max-width: 640px) {
+      #samePersonalityUsers {
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 0.4rem !important;
+      }
+      
+      .user-card {
+        padding: 0.4rem !important;
+      }
+      
+      .user-name {
+        font-size: 0.6rem !important;
+        margin-bottom: 0.2rem !important;
+      }
+      
+      .user-avatar {
+        width: 22px !important;
+        height: 22px !important;
+        font-size: 0.7rem !important;
+      }
+      
+      .user-personality {
+        font-size: 0.55rem !important;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      #samePersonalityUsers {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 0.3rem !important;
+      }
+      
+      .user-card {
+        padding: 0.3rem !important;
+      }
+      
+      .user-name {
+        font-size: 0.55rem !important;
+        margin-bottom: 0.15rem !important;
+      }
+      
+      .user-avatar {
+        width: 20px !important;
+        height: 20px !important;
+        font-size: 0.65rem !important;
+      }
+      
+      .user-personality {
+        font-size: 0.5rem !important;
+      }
+    }
+    
+    @media (max-width: 360px) {
+      #samePersonalityUsers {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.25rem !important;
+      }
+      
+      .user-card {
+        padding: 0.25rem !important;
+      }
+      
+      .user-name {
+        font-size: 0.5rem !important;
+        margin-bottom: 0.1rem !important;
+      }
+      
+      .user-avatar {
+        width: 18px !important;
+        height: 18px !important;
+        font-size: 0.6rem !important;
+      }
+      
+      .user-personality {
+        font-size: 0.45rem !important;
+      }
+    }
+  </style>
+  
+  <style>
+    /* 移动端触摸优化 */
+    @media (max-width: 768px) {
+      /* 触摸反馈 */
+      button {
+        -webkit-tap-highlight-color: transparent;
+        cursor: pointer;
+        user-select: none;
+      }
+      
+      button:active {
+        transform: scale(0.98);
+        transition: transform 0.1s ease;
+      }
+      
+      /* 图片优化 */
+      img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+      }
+      
+      /* 滚动优化 */
+      body {
+        -webkit-overflow-scrolling: touch;
+      }
+    }
+    
+    /* 平滑滚动 */
+    html {
+      scroll-behavior: smooth;
+    }
+    
+    /* 竖排文字 */
+    .writing-vertical {
+      writing-mode: vertical-rl;
+      text-orientation: upright;
+    }
+    
+    /* 设计方案切换 */
+    .design-content {
+      transition: all 0.5s ease;
+    }
+    
+    /* 人格图鉴动画 */
+    @keyframes unlock-pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+    
+    .unlock-animation {
+      animation: unlock-pulse 0.6s ease-out;
+    }
+    
+    /* 金色和红色的特殊发光效果 */
+    @keyframes gold-glow {
+      0%, 100% { box-shadow: 0 0 5px rgba(234, 179, 8, 0.5); }
+      50% { box-shadow: 0 0 20px rgba(234, 179, 8, 0.8); }
+    }
+    
+    @keyframes red-glow {
+      0%, 100% { box-shadow: 0 0 5px rgba(239, 68, 68, 0.5); }
+      50% { box-shadow: 0 0 20px rgba(239, 68, 68, 0.8); }
+    }
+    
+    .gold-glow-effect {
+      animation: gold-glow 2s ease-in-out infinite;
+    }
+    
+    .red-glow-effect {
+      animation: red-glow 2s ease-in-out infinite;
+    }
+    
+    /* 模态框平滑进入 */
+    @keyframes modal-slide-in {
+      from { opacity: 0; transform: scale(0.9) translateY(20px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    
+    .modal-enter {
+      animation: modal-slide-in 0.3s ease-out forwards;
+    }
+    
+    /* 触摸反馈 */
+    button {
+      -webkit-tap-highlight-color: transparent;
+      cursor: pointer;
+      user-select: none;
+      min-height: 44px;
+      min-width: 44px;
+    }
+    
+    button:active {
+      transform: scale(0.98);
+      transition: transform 0.1s ease;
+    }
+    
+    /* 链接触摸优化 */
+    a {
+      -webkit-tap-highlight-color: transparent;
+      min-height: 44px;
+      min-width: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    /* 卡片触摸优化 */
+    .cursor-pointer {
+      -webkit-tap-highlight-color: transparent;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+    }
+    
+    /* 触摸反馈优化 */
+    .option:active,
+    .card:active,
+    .cursor-pointer:active {
+      transform: scale(0.98);
+      transition: transform 0.1s ease;
+    }
+    
+    /* 图片优化 */
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+    
+    /* 加载优化 */
+    .bg-cover {
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+    
+    /* 相同人格用户模块样式 */
+    .user-card {
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      border-radius: 12px;
+      padding: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      text-align: center;
+      width: 100%;
+    }
+    
+    .user-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+    
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 16px;
+      margin: 0 auto;
+    }
+    
+    .user-name {
+      font-weight: bold;
+      color: #333;
+      font-size: 12px;
+      text-align: center;
+    }
+    
+    .user-game-id {
+      font-size: 10px;
+      color: #666;
+      text-align: center;
+    }
+    
+    .user-personality {
+      font-size: 10px;
+      color: #666;
+      display: flex;
+      align-items: center;
+    }
+    
+    .user-time {
+      font-size: 10px;
+      color: #999;
+    }
+    
+    /* 动画效果 */
+    @keyframes slide-in {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .user-card {
+      opacity: 0;
+      transition: none;
+    }
+    
+    .user-card.visible {
+      animation: slide-in 0.5s ease-out forwards;
+    }
+
+    /* ==================== 交流群模块 CSS ==================== */ 
+    
+    /* 固定定位在右下角 */ 
+    .group-card {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        z-index: 9999;
+        
+        /* 初始隐藏状态 */ 
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(20px);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    /* 显示状态 */ 
+    .group-card.show {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+    
+    /* 卡片容器 */ 
+    .group-card-inner {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: #fff;
+        padding: 12px 18px;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .group-card-inner:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 25px rgba(102, 126, 234, 0.6);
+    }
+    
+    /* 图标 */ 
+    .group-icon {
+        width: 32px;
+        height: 32px;
+        background: rgba(255,255,255,0.2);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+    }
+    
+    /* 文字 */ 
+    .group-text {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .group-label {
+        font-size: 11px;
+        opacity: 0.85;
+        font-weight: 500;
+    }
+    
+    .group-number {
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+    }
+    
+    /* 复制成功提示 Toast */ 
+    .copy-toast {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0.9);
+        background: rgba(0,0,0,0.8);
+        color: #fff;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-size: 14px;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        z-index: 10000;
+        pointer-events: none;
+    }
+    
+    .copy-toast.show {
+        opacity: 1;
+        visibility: visible;
+        transform: translate(-50%, -50%) scale(1);
+    }
+    
+    /* 移动端交流群模块调整 */
+    @media (max-width: 768px) {
+        .group-card {
+            transform: translateY(20px) scale(0.5);
+            transform-origin: bottom right;
+        }
+        
+        .group-card.show {
+            transform: translateY(0) scale(0.5);
+        }
+        
+        .group-card-inner {
+            padding: 8px 12px;
+            gap: 8px;
+        }
+        
+        .group-icon {
+            width: 24px;
+            height: 24px;
+            font-size: 14px;
+        }
+        
+        .group-label {
+            font-size: 9px;
+        }
+        
+        .group-number {
+            font-size: 12px;
+        }
+        
+        .copy-toast {
+            font-size: 12px;
+            padding: 10px 20px;
+        }
+    }
+
+  </style>
+</head>
+
+<body class="min-h-screen bg-[url('images/background.png')] bg-cover bg-center">
+    <!-- 游戏ID输入弹窗 -->
+  <div id="gameIdModal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
+    <div class="bg-white rounded-2xl p-6 sm:p-8 max-w-md w-full mx-4 max-w-[95vw]">
+      <div class="text-center mb-6">
+        <h2 class="text-xl sm:text-2xl font-bold text-primary mb-4">输入游戏ID <span class="text-gray-500 text-sm">(请勿使用敏感词汇)</span></h2>
+        <p class="text-gray-600">为了让你看到与你拥有相同人格的Tee，请输入你的游戏ID</p>
+        <p class="text-gray-500 text-sm mt-2">你的人格数据会流入数据库，届时你可以看到和你拥有一样人格的Tee！</p>
+      </div>
+      <div class="space-y-4">
+        <input type="text" id="gameIdInput" placeholder="请输入你的游戏ID" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+        <button id="submitGameId" class="w-full bg-primary text-white py-3 rounded-lg font-medium hover:bg-primary/90 transition-colors">
+          提交
+        </button>
+        <button id="skipGameId" class="w-full text-gray-500 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors">
+          跳过
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 用户资料编辑弹窗 -->
+  <div id="userProfileModal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-2xl p-6 sm:p-8 max-w-md w-full mx-4 max-w-[95vw]">
+      <div class="text-center mb-6">
+        <h2 class="text-xl sm:text-2xl font-bold text-primary mb-4">编辑个人资料</h2>
+      </div>
+      <div class="space-y-6">
+        <!-- 头像编辑 -->
+        <div class="flex flex-col items-center">
+          <div id="profileAvatar" class="w-20 sm:w-24 h-20 sm:h-24 rounded-full flex items-center justify-center mb-6">
+            <span id="profileAvatarText" class="text-white font-bold text-2xl sm:text-3xl">?</span>
+          </div>
+          
+          <!-- 头像预设选择 -->
+          <div class="w-full mb-6">
+            <h3 class="text-sm font-medium text-gray-700 mb-3 text-center">选择预设头像 <span class="text-xs text-gray-500">(和人格形象独立区分)</span></h3>
+            <div class="grid grid-cols-5 gap-3">
+              <!-- 第一行 -->
+              <div class="avatar-option cursor-pointer rounded-full overflow-hidden transition-all" data-avatar="拿刀.png">
+                <img src="images/拿刀.png" alt="键盘粉碎者" class="w-10 h-10 object-cover">
+              </div>
+              <div class="avatar-option cursor-pointer rounded-full overflow-hidden transition-all" data-avatar="彩虹.png">
+                <img src="images/彩虹.png" alt="收集狂" class="w-10 h-10 object-cover">
+              </div>
+              <div class="avatar-option cursor-pointer rounded-full overflow-hidden transition-all" data-avatar="ximi.png">
+                <img src="images/ximi.png" alt="摆烂仙人" class="w-10 h-10 object-cover">
+              </div>
+              <div class="avatar-option cursor-pointer rounded-full overflow-hidden transition-all" data-avatar="咸鱼.png">
+                <img src="images/咸鱼.png" alt="躺平咸鱼" class="w-10 h-10 object-cover">
+              </div>
+              <div class="avatar-option cursor-pointer rounded-full overflow-hidden transition-all" data-avatar="泡泡.png">
+                <img src="images/泡泡.png" alt="偷跑Tee" class="w-10 h-10 object-cover">
+              </div>
+              <!-- 第二行 -->
+              <div class="avatar-option cursor-pointer rounded-full overflow-hidden transition-all" data-avatar="布偶.png">
+                <img src="images/布偶.png" alt="独攀者" class="w-10 h-10 object-cover">
+              </div>
+              <div class="avatar-option cursor-pointer rounded-full overflow-hidden transition-all" data-avatar="猫.png">
+                <img src="images/猫.png" alt="中立者" class="w-10 h-10 object-cover">
+              </div>
+              <div class="avatar-option cursor-pointer rounded-full overflow-hidden transition-all" data-avatar="美西螈.png">
+                <img src="images/美西螈.png" alt="策略大师" class="w-10 h-10 object-cover">
+              </div>
+              <div class="avatar-option cursor-pointer rounded-full overflow-hidden transition-all" data-avatar="石像.png">
+                <img src="images/石像.png" alt="背锅侠" class="w-10 h-10 object-cover">
+              </div>
+              <div class="avatar-option cursor-pointer rounded-full overflow-hidden transition-all" data-avatar="大dd.png">
+                <img src="images/大dd.png" alt="小丑竟是我" class="w-10 h-10 object-cover">
+              </div>
+              <!-- 第三行 -->
+              <div class="avatar-option cursor-pointer rounded-full overflow-hidden transition-all" data-avatar="漂亮.png">
+                <img src="images/漂亮.png" alt="装杯带师" class="w-10 h-10 object-cover">
+              </div>
+              <div class="avatar-option cursor-pointer rounded-full overflow-hidden transition-all" data-avatar="小狗.png">
+                <img src="images/小狗.png" alt="带飞者" class="w-10 h-10 object-cover">
+              </div>
+              <div class="avatar-option cursor-pointer rounded-full overflow-hidden transition-all" data-avatar="飞鼠.png">
+                <img src="images/飞鼠.png" alt="扩列狂魔" class="w-10 h-10 object-cover">
+              </div>
+              <div class="avatar-option cursor-pointer rounded-full overflow-hidden transition-all" data-avatar="法师.png">
+                <img src="images/法师.png" alt="团队依赖户" class="w-10 h-10 object-cover">
+              </div>
+              <div class="avatar-option cursor-pointer rounded-full overflow-hidden border-2 border-dashed border-gray-300 hover:border-gray-400 transition-all flex items-center justify-center bg-gray-50 w-10 h-10" data-avatar="custom">
+                <i class="fa fa-plus text-gray-500 text-lg"></i>
+                <input type="file" id="avatarFileInput" accept="image/*" class="hidden">
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 游戏ID编辑 -->
+        <div>
+          <label class="block text-gray-700 mb-2">游戏ID <span class="text-gray-500 text-sm">(请勿使用敏感词汇)</span></label>
+          <input type="text" id="profileGameIdInput" placeholder="输入你的游戏ID" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+        </div>
+        
+        <div class="space-y-4">
+          <button id="saveProfile" class="w-full bg-primary text-white py-3 rounded-lg font-medium hover:bg-primary/90 transition-colors">
+            保存
+          </button>
+          <button id="closeProfileModal" class="w-full text-gray-500 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors">
+            取消
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 主容器 -->
+    <main class="w-full min-h-screen flex flex-col items-center justify-start px-4 py-8">
+      <!-- 头像和名字容器 - 固定在右上角 -->
+      <div class="fixed top-4 right-4 flex flex-col items-center z-50 transition-all duration-300 ease-in-out">
+        <div id="userAvatar" class="w-10 sm:w-12 h-10 sm:h-12 rounded-full bg-gradient-to-r from-secondary to-accent flex items-center justify-center cursor-pointer hover:scale-110 transition-all duration-300">
+          <span id="avatarText" class="text-white font-bold text-sm sm:text-base">?</span>
+        </div>
+      </div>
+      
+      <!-- 标题部分 -->
+      <div class="mb-12 w-full max-w-3xl flex flex-col items-center">
+        <h1 class="text-4xl sm:text-5xl font-bold text-shadow-lg tracking-wide text-center" style="font-family: 'Comic Sans MS', cursive, sans-serif;">
+          <span class="block bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent">DDnet</span>
+          <span class="block text-primary">人格测试</span>
+        </h1>
+      </div>
+      
+      <!-- 测试介绍模块 -->
+      <div class="max-w-3xl w-full mb-12">
+        <div class="bg-white bg-opacity-90 rounded-2xl p-6 sm:p-8 card-shadow">
+          <h2 class="text-2xl font-bold text-primary text-center mb-6">测试介绍</h2>
+          <div class="text-gray-700 leading-relaxed text-center">
+            <p class="mb-4">一种基于玩家行为模式与决策偏好的心理测评工具</p>
+            <p class="mb-4">旨在通过分析玩家在不同游戏模式下的偏好、策略选择和操作习惯</p>
+            <p class="mb-4">勾勒出个体在虚拟竞技环境中的人格特征轮廓</p>
+            <p class="mb-4">测试内容融合了DDR模式与KOG模式的多维度要素</p>
+            <p class="mb-4">从社交 决策 情绪 幽默 责任 挑战 自信这七个角度入手</p>
+            <p>提供专业化、结构化的人格分析，适合玩家自我认知与社交趣味分享</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 测试流程 -->
+      <div class="max-w-3xl w-full mb-12">
+        <div class="bg-white bg-opacity-90 rounded-2xl p-6 sm:p-8 card-shadow">
+          <h2 class="text-2xl font-bold text-primary text-center mb-6">测试流程</h2>
+          <div class="flex flex-col space-y-6">
+            <!-- 步骤1 -->
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+                <span class="text-white font-bold">1</span>
+              </div>
+              <div>
+                <h3 class="font-bold text-dark">回答问题</h3>
+                <p class="text-gray-600">回答30个关于tee偏好和行为的问题</p>
+              </div>
+            </div>
+            
+            <!-- 步骤2 -->
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 bg-secondary rounded-full flex items-center justify-center flex-shrink-0">
+                <span class="text-white font-bold">2</span>
+              </div>
+              <div>
+                <h3 class="font-bold text-dark">系统分析</h3>
+                <p class="text-gray-600">系统根据回答分析tee人格特质</p>
+              </div>
+            </div>
+            
+            <!-- 步骤3 -->
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 bg-accent rounded-full flex items-center justify-center flex-shrink-0">
+                <span class="text-white font-bold">3</span>
+              </div>
+              <div>
+                <h3 class="font-bold text-dark">查看结果</h3>
+                <p class="text-gray-600">获取详细的人格分析报告和相关建议</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 相同人格用户模块 -->
+      <div class="max-w-3xl w-full mb-12">
+        <div class="bg-white bg-opacity-90 rounded-2xl p-6 sm:p-8 card-shadow">
+          <h2 class="text-2xl font-bold text-primary text-center mb-6">
+            <i class="fa fa-users mr-2"></i>相同人格用户
+          </h2>
+          <div id="samePersonalityUsers" class="grid grid-cols-5 gap-2 w-full">
+            <!-- 相同人格用户将在这里动态渲染 -->
+          </div>
+        </div>
+      </div>
+      
+      <!-- 开始测试按钮 -->
+      <div class="flex flex-col sm:flex-row gap-4 items-center mb-8">
+        <button id="startTest" class="bg-primary text-white text-xl sm:text-2xl font-bold px-12 sm:px-16 py-3 sm:py-4 rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+          开始测试
+        </button>
+        <button id="openCollection" class="bg-gray-700 text-white text-xl font-bold px-12 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+          <i class="fa fa-book mr-2"></i>人格图鉴
+        </button>
+        <button id="openHistory" class="bg-gray-600 text-white text-xl font-bold px-12 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+          <i class="fa fa-history mr-2"></i>查看历史
+        </button>
+        <button id="returnToResult" class="bg-gray-500 text-white text-xl font-bold px-12 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+          <i class="fa fa-undo mr-2"></i>返回结果
+        </button>
+      </div>
+    </main>
+  
+  <!-- 人格图鉴模态框 -->
+  <div id="collectionModal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-2xl p-6 sm:p-8 max-w-6xl w-full max-h-[90vh] overflow-y-auto mx-4 max-w-[95vw]">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-3xl font-bold text-primary">
+          <i class="fa fa-book mr-2"></i>人格图鉴
+        </h2>
+        <button id="closeCollection" class="text-gray-500 hover:text-gray-700 text-3xl">
+          <i class="fa fa-times"></i>
+        </button>
+      </div>
+      
+      <!-- 获取概率说明 -->
+      <div class="mb-6 p-4 bg-gray-50 rounded-xl">
+        <h3 class="font-bold mb-3">获取概率等级</h3>
+        <div class="flex flex-wrap gap-4 items-center">
+          <!-- 六个等级颜色模块 -->
+          <div class="flex flex-wrap gap-4">
+            <div class="flex items-center gap-2">
+              <span class="w-4 h-4 bg-white border-2 border-gray-400 rounded"></span>
+              <span>白色</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="w-4 h-4 bg-green-500 rounded"></span>
+              <span>绿色</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="w-4 h-4 bg-blue-500 rounded"></span>
+              <span>蓝色</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="w-4 h-4 bg-purple-500 rounded"></span>
+              <span>紫色</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="w-4 h-4 bg-yellow-500 rounded"></span>
+              <span>金色</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="w-4 h-4 bg-red-500 rounded"></span>
+              <span>红色</span>
+            </div>
+            <div id="rainbowRarity" class="flex items-center gap-2 hidden">
+              <span class="w-4 h-4 bg-gradient-to-r from-[rgb(239,68,68)] via-[rgb(234,179,8)] via-[rgb(16,185,129)] via-[rgb(59,130,246)] via-[rgb(124,58,237)] to-[rgb(236,72,153)] rounded"></span>
+              <span>彩色</span>
+            </div>
+          </div>
+          <!-- 按钮模块 -->
+          <div class="ml-auto flex gap-2">
+            <button id="resetCollectionBtn" onclick="resetCollection()" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors hidden">
+              重置图鉴
+            </button>
+            <button id="unlockAllBtn" onclick="unlockAllPersonalities()" class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors hidden">
+              一键解锁
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 图鉴网格 -->
+      <div id="collectionGrid" class="grid grid-cols-3 sm:grid-cols-5 gap-4">
+        <!-- 人格卡片将通过JS动态生成 -->
+      </div>
+    </div>
+  </div>
+  
+  <!-- 人格详情模态框 -->
+  <div id="personalityDetailModal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-2xl p-6 sm:p-8 max-w-xl w-full mx-4 max-w-[90vw]">
+      <div class="flex justify-between items-center mb-6">
+        <h2 id="detailTitle" class="text-2xl font-bold text-primary">人格详情</h2>
+        <button id="closeDetail" class="text-gray-500 hover:text-gray-700 text-3xl">
+          <i class="fa fa-times"></i>
+        </button>
+      </div>
+      <div id="detailContent" class="flex flex-col items-center">
+        <!-- 详情内容将通过JS动态生成 -->
+      </div>
+    </div>
+  </div>
+  
+  <!-- 历史记录模态框 -->
+  <div id="historyModal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-2xl p-6 sm:p-8 max-w-xl w-full max-h-[90vh] overflow-y-auto mx-4 max-w-[95vw]">
+      <div class="flex justify-between items-center mb-6 gap-4">
+        <h2 class="text-xl sm:text-2xl font-bold text-primary whitespace-nowrap max-w-[80%]">
+          <i class="fa fa-history mr-2"></i>测试历史记录
+        </h2>
+        <div class="flex gap-2">
+          <button onclick="clearAllHistory()" class="px-3 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-xs whitespace-nowrap max-w-[100px]">
+            <i class="fa fa-trash mr-1"></i> 清除记录
+          </button>
+          <button id="closeHistory" class="text-gray-500 hover:text-gray-700 text-3xl">
+            <i class="fa fa-times"></i>
+          </button>
+        </div>
+      </div>
+      
+      <div id="historyContent" class="space-y-4">
+        <!-- 历史记录将通过JS动态生成 -->
+      </div>
+    </div>
+  </div>
+  
+
+
+  <!-- 交互JS -->
+  <script>
+    // 人格数据
+    const personalities = [
+      { 
+        id: 'Emotional Player', 
+        name: '键盘粉碎者', 
+        rarity: 'red', 
+        percentage: 0.02,
+        reason: '情绪极端化玩家极度稀有，因为大多数社区会排斥此类行为，使其占比微乎其微',
+        image: '拿刀.png'
+      },
+      { 
+        id: 'Hidden Personality', 
+        name: '收集狂', 
+        rarity: 'rainbow', 
+        percentage: 0.01,
+        reason: '传说中的终极人格，只有真正的DDnet大师才能解锁',
+        image: '彩虹.png',
+        isHidden: true
+      },
+      { 
+        id: 'Challenge Avoider', 
+        name: '摆烂仙人', 
+        rarity: 'gold', 
+        percentage: 0.04,
+        reason: '也许会，但就是不展现，图的就是一个摆',
+        image: 'ximi.png'
+      },
+      {
+        id: 'Lying Flat Fish',
+        name: '躺平咸鱼',
+        rarity: 'gold',
+        percentage: 0.15,
+        reason: '社交不算少，但更倾向稳妥保守与降低压力，自信心偏低、挑战想法偏低',
+        image: '咸鱼.png'
+      },
+      { 
+        id: 'Rusher', 
+        name: '偷跑Tee', 
+        rarity: 'purple', 
+        percentage: 0.35,
+        reason: '个人主义偷跑行为在团队游戏中罕见，常引发负面反馈',
+        image: '泡泡.png'
+      },
+      { 
+        id: 'Bald Grinder', 
+        name: '独攀者', 
+        rarity: 'purple', 
+        percentage: 0.54,
+        reason: '硬核技术追求者非常稀有，需大量时间投入',
+        image: '布偶.png'
+      },
+      { 
+        id: 'Balanced Player', 
+        name: '中立者', 
+        rarity: 'blue', 
+        percentage: 0.70,
+        reason: '适应性极强但能做到事事不关己的Tee不多',
+        image: '猫.png'
+      },
+      {
+        id: 'Rational Thinker',
+        name: '策略大师', 
+        rarity: 'blue', 
+        percentage: 2.12,
+        reason: '分析型玩家在快节奏游戏中较为少见',
+        image: '美西螈.png'
+      },
+      {
+        id: 'Responsible Anchor', 
+        name: '背锅侠', 
+        rarity: 'blue', 
+        percentage: 3.67,
+        reason: '负责任的角色在团队中常见，但不如纯支持型普遍',
+        image: '石像.png'
+      },
+      { 
+        id: 'Self-Deprecating Humorist', 
+        name: '小丑竟是我', 
+        rarity: 'green', 
+        percentage: 3.73,
+        reason: '自嘲幽默型在失误时出现，整体较少',
+        image: '大dd.png'
+      },
+      { 
+        id: 'Confident Competitor', 
+        name: '装杯带师', 
+        rarity: 'green', 
+        percentage: 4.86,
+        reason: '竞争狂热度高，但多数玩家更偏向休闲',
+        image: '漂亮.png'
+      },
+      {
+        id: 'Carry Goat', 
+        name: '带飞者', 
+        rarity: 'green', 
+        percentage: 7.67,
+        reason: '一飞，救救',
+        image: '小狗.png'
+      },
+      { 
+        id: 'Friend Collector', 
+        name: '扩列狂魔', 
+        rarity: 'green', 
+        percentage: 8.73,
+        reason: '社交活跃玩家较多，但受限于游戏类型（如纯竞技游戏较少）',
+        image: '飞鼠.png'
+      },
+      { 
+        id: 'Team Supporter', 
+        name: '团队依赖户', 
+        rarity: 'white', 
+        percentage: 28.79,
+        reason: '支持型玩家在合作模式中高频率出现',
+        image: '法师.png'
+      },
+      { 
+        id: 'Jokester', 
+        name: '整活艺术家', 
+        rarity: 'white', 
+        percentage: 38.0,
+        reason: '幽默互动型依赖特定社区，尤其是DDnet',
+        image: '狐狸.png'
+      }
+    ];
+
+    // 获取概率颜色配置
+    const rarityColors = {
+      'white': { bg: 'bg-white', border: 'border-gray-400', text: 'text-gray-800', glow: '' },
+      'green': { bg: 'bg-green-50', border: 'border-green-500', text: 'text-green-700', glow: '' },
+      'blue': { bg: 'bg-blue-50', border: 'border-blue-500', text: 'text-blue-700', glow: '' },
+      'purple': { bg: 'bg-purple-50', border: 'border-purple-500', text: 'text-purple-700', glow: '' },
+      'gold': { bg: 'bg-yellow-50', border: 'border-yellow-500', text: 'text-yellow-700', glow: 'shadow-lg shadow-yellow-200' },
+      'red': { bg: 'bg-red-50', border: 'border-red-500', text: 'text-red-700', glow: 'shadow-lg shadow-red-200' },
+      'rainbow': { bg: 'bg-gradient-to-r from-[rgb(239,68,68)] via-[rgb(234,179,8)] via-[rgb(16,185,129)] via-[rgb(59,130,246)] via-[rgb(124,58,237)] to-[rgb(236,72,153)]', border: 'border-white', text: 'text-white', glow: 'shadow-lg shadow-purple-300' }
+    };
+
+    // 从本地存储获取已解锁的人格
+    function getUnlockedPersonalities() {
+      const saved = localStorage.getItem('unlockedPersonalities');
+      return saved ? JSON.parse(saved) : [];
+    }
+
+    // 保存已解锁的人格到本地存储
+    function saveUnlockedPersonalities(unlocked) {
+      localStorage.setItem('unlockedPersonalities', JSON.stringify(unlocked));
+    }
+
+    // 检查是否解锁了所有非隐藏人格
+    function hasUnlockedAllNormalPersonalities() {
+      const unlocked = getUnlockedPersonalities();
+      const normalPersonalities = personalities.filter(p => !p.isHidden);
+      return unlocked.length >= normalPersonalities.length;
+    }
+
+    // 检查是否解锁了隐藏人格
+    function hasUnlockedHiddenPersonality() {
+      const unlocked = getUnlockedPersonalities();
+      return unlocked.includes('Hidden Personality');
+    }
+
+    // 返回按获取概率从高到低排序的人格列表
+    function sortPersonalitiesByRarity() {
+      let filteredPersonalities = [...personalities];
+      
+      // 检查是否解锁了所有非隐藏人格
+      const hasAllNormal = hasUnlockedAllNormalPersonalities();
+      const hasHidden = hasUnlockedHiddenPersonality();
+      
+      // 只在解锁所有非隐藏人格或已解锁隐藏人格时显示隐藏人格
+      if (!hasAllNormal && !hasHidden) {
+        filteredPersonalities = filteredPersonalities.filter(p => !p.isHidden);
+      }
+      
+      // 反转数组以从高到低显示
+      const reversed = filteredPersonalities.reverse();
+      
+      // 确保隐藏人格在键盘粉碎者右边
+      if (hasAllNormal || hasHidden) {
+        const hiddenIndex = reversed.findIndex(p => p.id === 'Hidden Personality');
+        const keyboardIndex = reversed.findIndex(p => p.id === 'Emotional Player');
+        
+        if (hiddenIndex !== -1 && keyboardIndex !== -1 && hiddenIndex < keyboardIndex) {
+          // 如果隐藏人格在键盘粉碎者左边，交换位置
+          [reversed[hiddenIndex], reversed[keyboardIndex]] = [reversed[keyboardIndex], reversed[hiddenIndex]];
+        }
+      }
+      
+      return reversed;
+    }
+
+    // 渲染图鉴网格
+    function renderCollectionGrid() {
+      const grid = document.getElementById('collectionGrid');
+      const unlocked = getUnlockedPersonalities();
+      
+      grid.innerHTML = '';
+      
+      // 检查是否解锁了隐藏人格
+      const hasHidden = hasUnlockedHiddenPersonality();
+      
+      // 显示或隐藏彩色稀有度图标
+      const rainbowRarityEl = document.getElementById('rainbowRarity');
+      if (rainbowRarityEl) {
+        if (hasHidden) {
+          rainbowRarityEl.classList.remove('hidden');
+        } else {
+          rainbowRarityEl.classList.add('hidden');
+        }
+      }
+      
+      // 按获取概率排序
+      const sortedPersonalities = sortPersonalitiesByRarity();
+      
+      sortedPersonalities.forEach(personality => {
+        const isUnlocked = unlocked.includes(personality.id);
+        const colors = rarityColors[personality.rarity];
+        
+        const card = document.createElement('div');
+        
+        // 为金色和红色添加特殊发光效果
+        let glowClass = colors.glow;
+        if (personality.rarity === 'gold') {
+          glowClass = 'gold-glow-effect';
+        } else if (personality.rarity === 'red') {
+          glowClass = 'red-glow-effect';
+        } else if (personality.rarity === 'rainbow') {
+          // 为彩色稀有度添加特殊效果
+          glowClass = 'shadow-lg shadow-purple-300';
+        }
+        
+        card.className = `relative p-4 rounded-xl border-2 ${colors.border} ${colors.bg} ${glowClass} cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-lg flex items-center justify-center min-h-[120px]`;
+        card.onclick = () => showPersonalityDetail(personality, isUnlocked);
+        
+        if (isUnlocked) {
+          card.innerHTML = `
+            <div class="text-center">
+              <div class="mb-2">
+                <img src="images/${personality.image}" alt="${personality.name}" class="w-12 h-12 mx-auto">
+              </div>
+              <div class="font-bold ${colors.text} text-sm">${personality.name}</div>
+              <div class="text-xs ${colors.text} opacity-75">${personality.percentage}%</div>
+            </div>
+            <div class="absolute -top-1 -right-1 w-4 h-4 rounded-full ${colors.border.replace('border-', 'bg-')} flex items-center justify-center">
+              <i class="fa fa-check text-white text-xs"></i>
+            </div>
+          `;
+        } else {
+          card.innerHTML = `
+            <div class="text-center">
+              <div class="text-3xl mb-2 text-gray-400">
+                <i class="fa fa-question-circle"></i>
+              </div>
+              <div class="font-bold text-gray-400 text-sm">???</div>
+              <div class="text-xs text-gray-400 opacity-75">未解锁</div>
+            </div>
+          `;
+        }
+        
+        grid.appendChild(card);
+      });
+    }
+
+    // 显示人格详情
+    function showPersonalityDetail(personality, isUnlocked) {
+      const modal = document.getElementById('personalityDetailModal');
+      const title = document.getElementById('detailTitle');
+      const content = document.getElementById('detailContent');
+      
+      // 禁止背景页面滚动
+      document.body.style.overflow = 'hidden';
+      
+      if (isUnlocked) {
+        const colors = rarityColors[personality.rarity];
+        // 移除所有句号（包括中文和英文）
+        const reasonText = personality.reason.replace(/[。.]/g, '');
+        // 移除左上角显示的人格名称元素
+        title.textContent = '';
+        title.className = 'hidden';
+        content.innerHTML = `
+          <div class="space-y-6">
+            <div class="flex flex-col items-center justify-center p-6 ${colors.bg} rounded-xl border-2 ${colors.border}">
+              <div class="mb-4">
+                <img src="images/${personality.image}" alt="${personality.name}" class="w-16 h-16 mx-auto">
+              </div>
+              <div class="text-center">
+                <div class="font-bold ${colors.text} text-xl mb-1">${personality.name}</div>
+                <div class="text-sm ${colors.text} opacity-75">${personality.id}</div>
+                <div class="text-sm ${colors.text} opacity-75 mt-2">获取概率: ${personality.percentage}%</div>
+              </div>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-sm">
+              <p class="text-gray-700 leading-relaxed text-base line-height-relaxed">${reasonText}</p>
+            </div>
+          </div>
+        `;
+      } else {
+        // 移除左上角显示的人格名称元素
+        title.textContent = '';
+        title.className = 'hidden';
+        content.innerHTML = `
+          <div class="text-center py-10">
+            <div class="text-6xl text-gray-300 mb-6">
+              <i class="fa fa-lock"></i>
+            </div>
+            <p class="text-gray-600 text-lg">继续游戏以解锁更多人格</p>
+            <p class="text-gray-500 mt-3">完成测试并获得该人格类型即可解锁</p>
+          </div>
+        `;
+      }
+      
+      modal.classList.remove('hidden');
+    }
+
+    // 按钮点击事件
+    document.getElementById('startTest').addEventListener('click', function() {
+      // 跳转到测试页面
+      window.location.href = 'test.html';
+    });
+
+    // 图鉴按钮点击事件
+    document.getElementById('openCollection').addEventListener('click', function() {
+      renderCollectionGrid();
+      document.getElementById('collectionModal').classList.remove('hidden');
+    });
+
+    // 关闭图鉴按钮点击事件
+    document.getElementById('closeCollection').addEventListener('click', function() {
+      document.getElementById('collectionModal').classList.add('hidden');
+    });
+
+    // 关闭详情按钮点击事件
+    document.getElementById('closeDetail').addEventListener('click', function() {
+      document.getElementById('personalityDetailModal').classList.add('hidden');
+      // 恢复背景页面滚动
+      document.body.style.overflow = '';
+    });
+
+    // 点击模态框外部关闭
+    document.getElementById('collectionModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        this.classList.add('hidden');
+      }
+    });
+
+    document.getElementById('personalityDetailModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        this.classList.add('hidden');
+        // 恢复背景页面滚动
+        document.body.style.overflow = '';
+      }
+    });
+
+    // 显示解锁成功动画
+    function showUnlockSuccess(personalityId) {
+      const personality = personalities.find(p => p.id === personalityId);
+      if (personality) {
+        alert(`🎉 恭喜！你成功解锁了新人格：${personality.name}！`);
+      } else {
+        console.log('未找到人格数据:', personalityId);
+      }
+    }
+
+    // 保存测试历史（仅人格标识与中文名，不存答题详情）
+    function saveTestHistory(type) {
+      const history = getTestHistory();
+      const personality = personalities.find(p => p.id === type);
+      const newRecord = {
+        id: Date.now(),
+        date: new Date().toLocaleString(),
+        type: type,
+        name: personality ? personality.name : type
+      };
+      history.unshift(newRecord); // 最新记录在前
+      localStorage.setItem('testHistory', JSON.stringify(history));
+    }
+
+    // 获取测试历史
+    function getTestHistory() {
+      const saved = localStorage.getItem('testHistory');
+      return saved ? JSON.parse(saved) : [];
+    }
+
+    // 渲染历史记录（仅显示人格中文名）
+    function renderHistory() {
+      const history = getTestHistory();
+      const content = document.getElementById('historyContent');
+
+      if (history.length === 0) {
+        content.innerHTML = `
+          <div class="text-center py-10">
+            <div class="text-6xl text-gray-300 mb-6">
+              <i class="fa fa-clock-o"></i>
+            </div>
+            <p class="text-gray-600 text-lg">暂无测试历史</p>
+            <p class="text-gray-500 mt-3">完成测试后，记录将显示在这里</p>
+          </div>
+        `;
+        return;
+      }
+
+      content.innerHTML = '';
+      const historyContainer = document.createElement('div');
+      historyContainer.className = 'space-y-2';
+      
+      history.forEach(record => {
+        const card = document.createElement('div');
+        card.className = 'bg-white border border-gray-200 rounded-xl px-4 py-3 shadow-sm hover:shadow-md transition-shadow flex justify-between items-center';
+        card.innerHTML = `
+          <div class="font-bold text-sm text-dark">${record.name}</div>
+          <span class="text-xs text-gray-500">${record.date || ''}</span>
+        `;
+        historyContainer.appendChild(card);
+      });
+      
+      content.appendChild(historyContainer);
+    }
+
+    // 重置图鉴功能
+    function resetCollection() {
+      if (confirm('确定要重置图鉴吗？这将清除所有已解锁的人格记录。')) {
+        localStorage.removeItem('unlockedPersonalities');
+        renderCollectionGrid();
+        alert('图鉴已重置，所有人格已恢复为未解锁状态。');
+      }
+    }
+
+    // 一键解锁所有人格
+    function unlockAllPersonalities() {
+      if (confirm('确定要一键解锁所有14种人格吗？')) {
+        // 获取所有人格的ID
+        const allPersonalityIds = personalities.map(p => p.id);
+        // 保存到本地存储
+        saveUnlockedPersonalities(allPersonalityIds);
+        // 重新渲染图鉴网格
+        renderCollectionGrid();
+        // 显示成功提示
+        alert('🎉 成功解锁所有14种人格！');
+      }
+    }
+
+    // 清除所有历史记录
+    function clearAllHistory() {
+      if (confirm('确定要清除所有测试历史记录吗？此操作不可恢复。')) {
+        localStorage.removeItem('testHistory');
+        renderHistory();
+        alert('所有测试历史记录已清除。');
+      }
+    }
+
+    // 检查是否从测试页面返回，并解锁相应人格
+    function checkAndUnlockPersonality() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const unlockedType = urlParams.get('unlocked');
+      const answers = urlParams.get('answers');
+      console.log('检测URL参数，unlocked:', unlockedType, 'answers:', answers);
+      
+      if (unlockedType) {
+        console.log('检测到要解锁的人格:', unlockedType);
+        let unlocked = getUnlockedPersonalities();
+        console.log('当前已解锁列表:', unlocked);
+        const isNewUnlock = !unlocked.includes(unlockedType);
+        console.log('是否是新解锁:', isNewUnlock);
+        
+        if (isNewUnlock) {
+          unlocked.push(unlockedType);
+          
+          // 检查是否解锁了所有非隐藏人格，如果是则自动解锁隐藏人格（收集狂）
+          const normalPersonalities = personalities.filter(p => !p.isHidden);
+          if (unlocked.length >= normalPersonalities.length && !unlocked.includes('Hidden Personality')) {
+            unlocked.push('Hidden Personality');
+            setTimeout(() => {
+              showUnlockSuccess('Hidden Personality');
+              // 当获得收集狂人格后，显示重置图鉴和一键解锁按钮
+              showAdminButtons();
+            }, 600);
+          }
+          
+          saveUnlockedPersonalities(unlocked);
+          console.log('已成功保存解锁状态，新的已解锁列表:', unlocked);
+          
+          // 重新渲染图鉴网格
+          renderCollectionGrid();
+          
+          // 显示解锁成功提示
+          setTimeout(() => {
+            showUnlockSuccess(unlockedType);
+          }, 300);
+        } else {
+          console.log('该人格已经解锁过了');
+        }
+        
+        // 保存测试历史（仅人格，不含答题）
+        if (answers) {
+          saveTestHistory(unlockedType);
+          console.log('已保存测试历史');
+        }
+        
+        // 提交用户数据到后端
+        submitUserData(unlockedType);
+        
+        // 移除URL参数
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+    }
+    
+    // 显示重置图鉴和一键解锁按钮
+    function showAdminButtons() {
+      const resetBtn = document.getElementById('resetCollectionBtn');
+      const unlockBtn = document.getElementById('unlockAllBtn');
+      if (resetBtn) resetBtn.classList.remove('hidden');
+      if (unlockBtn) unlockBtn.classList.remove('hidden');
+    }
+    
+    // 提交用户数据到后端
+    function submitUserData(personalityType) {
+      const gameId = localStorage.getItem('gameId');
+      const hasShownModal = localStorage.getItem('hasShownGameIdModal');
+      
+      // 如果用户跳过了取名，不提交数据
+      if (!gameId && hasShownModal) {
+        console.log('用户跳过了取名，不提交数据');
+        return;
+      }
+      
+      // 构建用户数据
+      const userData = {
+        gameId: gameId || '游客',
+        personality: personalityType,
+        name: gameId || '游客',
+        timestamp: new Date().toISOString()
+      };
+      
+      console.log('准备提交用户数据:', userData);
+      
+      // 检查是否已提交过相同数据，避免重复提交
+      const submissionKey = `submission_${gameId}_${personalityType}`;
+      const lastSubmission = localStorage.getItem(submissionKey);
+      const now = Date.now();
+      
+      // 24小时内不重复提交相同数据
+      if (lastSubmission && (now - parseInt(lastSubmission)) < 24 * 60 * 60 * 1000) {
+        console.log('24小时内已提交过相同数据，跳过提交');
+        return;
+      }
+      
+      // 提交数据到后端
+      // ⚠️ 部署后需要将API地址改成你的实际后端地址
+      const API_BASE = 'https://ayin-production.up.railway.app'; // 后端API地址
+      // GitHub Pages部署时填写：'https://你的用户名.github.io/仓库名'
+      fetch(API_BASE + '/api/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(userData)
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('数据提交成功:', data);
+        // 记录提交时间
+        localStorage.setItem(submissionKey, now.toString());
+      })
+      .catch(error => {
+        console.error('数据提交失败:', error);
+        // 后端API可能还未部署，使用本地测试数据作为备用
+        console.log('使用本地测试数据作为备用');
+      });
+    }
+    
+    // 检查是否应该显示管理员按钮
+    function checkAdminButtons() {
+      const unlocked = getUnlockedPersonalities();
+      if (unlocked.includes('Hidden Personality')) {
+        showAdminButtons();
+      }
+    }
+
+    // 历史记录按钮点击事件
+    document.getElementById('openHistory').addEventListener('click', function() {
+      renderHistory();
+      document.getElementById('historyModal').classList.remove('hidden');
+    });
+    
+    // 关闭历史记录按钮点击事件
+    document.getElementById('closeHistory').addEventListener('click', function() {
+      document.getElementById('historyModal').classList.add('hidden');
+    });
+    
+    // 点击历史记录模态框外部关闭
+    document.getElementById('historyModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        this.classList.add('hidden');
+      }
+    });
+    
+    // 返回结果按钮点击事件
+    document.getElementById('returnToResult').addEventListener('click', function() {
+      const history = getTestHistory();
+      if (history.length > 0) {
+        // 获取最新的测试记录
+        const latestRecord = history[0];
+        // 跳转到结果页面
+        window.location.href = `result.html?type=${encodeURIComponent(latestRecord.type)}`;
+      } else {
+        // 如果没有历史记录，提示用户
+        alert('暂无测试历史，请先完成测试。');
+      }
+    });
+
+    // 头像选择功能
+    function initAvatarSelection() {
+      // 预设头像列表
+      const presetAvatars = [
+        '拿刀.png', '彩虹.png', 'ximi.png', '咸鱼.png', '泡泡.png',
+        '布偶.png', '猫.png', '美西螈.png', '石像.png', '大dd.png',
+        '漂亮.png', '小狗.png', '飞鼠.png', '法师.png'
+      ];
+      
+      // 预设头像选择
+      const avatarOptions = document.querySelectorAll('.avatar-option');
+      const profileAvatar = document.getElementById('profileAvatar');
+      const profileAvatarText = document.getElementById('profileAvatarText');
+      const avatarFileInput = document.getElementById('avatarFileInput');
+      
+      avatarOptions.forEach(option => {
+        option.addEventListener('click', function() {
+          const avatarType = this.dataset.avatar;
+          
+          if (avatarType === 'custom') {
+            // 触发文件选择
+            avatarFileInput.click();
+          } else {
+            // 选择预设头像
+            // 移除背景渐变，显示头像图片
+            profileAvatar.style.background = 'none';
+            profileAvatar.innerHTML = `<img src="images/${avatarType}" alt="头像" class="w-full h-full object-cover rounded-full">`;
+            profileAvatarText.style.display = 'none';
+            
+            // 保存到本地存储
+            localStorage.setItem('userAvatar', JSON.stringify({ type: 'preset', image: avatarType }));
+            
+            // 更新主页面头像
+            updateMainAvatar();
+          }
+        });
+      });
+      
+      // 自定义头像上传
+      avatarFileInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            // 移除背景渐变，显示自定义头像
+            profileAvatar.style.background = 'none';
+            profileAvatar.innerHTML = `<img src="${e.target.result}" alt="自定义头像" class="w-full h-full object-cover rounded-full">`;
+            profileAvatarText.style.display = 'none';
+            
+            // 保存到本地存储
+            localStorage.setItem('userAvatar', JSON.stringify({ type: 'custom', image: e.target.result }));
+            
+            // 更新主页面头像
+            updateMainAvatar();
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+      
+      // 随机分配预设头像
+      function assignRandomAvatar() {
+        const savedAvatar = localStorage.getItem('userAvatar');
+        if (!savedAvatar) {
+          // 随机选择一个预设头像
+          const randomIndex = Math.floor(Math.random() * presetAvatars.length);
+          const randomAvatar = presetAvatars[randomIndex];
+          
+          // 保存到本地存储
+          localStorage.setItem('userAvatar', JSON.stringify({ type: 'preset', image: randomAvatar }));
+          
+          // 更新显示
+          if (profileAvatar) {
+            // 移除背景渐变，显示头像图片
+            profileAvatar.style.background = 'none';
+            profileAvatar.innerHTML = `<img src="images/${randomAvatar}" alt="头像" class="w-full h-full object-cover rounded-full">`;
+            profileAvatarText.style.display = 'none';
+          }
+          
+          updateMainAvatar();
+        }
+      }
+      
+      // 加载保存的头像
+      function loadSavedAvatar() {
+        const savedAvatar = localStorage.getItem('userAvatar');
+        if (savedAvatar) {
+          try {
+            const avatarData = JSON.parse(savedAvatar);
+            if (avatarData.type === 'preset') {
+              // 移除背景渐变，显示头像图片
+              profileAvatar.style.background = 'none';
+              profileAvatar.innerHTML = `<img src="images/${avatarData.image}" alt="头像" class="w-full h-full object-cover rounded-full">`;
+              profileAvatarText.style.display = 'none';
+            } else if (avatarData.type === 'custom') {
+              // 移除背景渐变，显示自定义头像
+              profileAvatar.style.background = 'none';
+              profileAvatar.innerHTML = `<img src="${avatarData.image}" alt="自定义头像" class="w-full h-full object-cover rounded-full">`;
+              profileAvatarText.style.display = 'none';
+            }
+          } catch (error) {
+            console.error('加载头像失败:', error);
+            // 加载失败时分配随机头像
+            assignRandomAvatar();
+          }
+        } else {
+          // 首次进入时分配随机头像
+          assignRandomAvatar();
+        }
+      }
+      
+      // 加载保存的头像
+      loadSavedAvatar();
+      
+      // 主页面头像显示
+      const userAvatar = document.getElementById('userAvatar');
+      const avatarText = document.getElementById('avatarText');
+      
+      function updateMainAvatar() {
+        const savedAvatar = localStorage.getItem('userAvatar');
+        if (savedAvatar) {
+          try {
+            const avatarData = JSON.parse(savedAvatar);
+            if (avatarData.type === 'preset') {
+              // 移除背景渐变，显示头像图片
+              userAvatar.style.background = 'none';
+              userAvatar.innerHTML = `<img src="images/${avatarData.image}" alt="头像" class="w-full h-full object-cover rounded-full">`;
+              avatarText.style.display = 'none';
+            } else if (avatarData.type === 'custom') {
+              // 移除背景渐变，显示自定义头像
+              userAvatar.style.background = 'none';
+              userAvatar.innerHTML = `<img src="${avatarData.image}" alt="自定义头像" class="w-full h-full object-cover rounded-full">`;
+              avatarText.style.display = 'none';
+            }
+          } catch (error) {
+            console.error('加载头像失败:', error);
+          }
+        }
+        // 只更新头像，不更新用户名字
+      }
+      
+      // 更新主页面头像
+      updateMainAvatar();
+    }
+
+    // 渲染相同人格用户列表（支持迭代显示）
+    function renderSamePersonalityUsers() {
+      const usersContainer = document.getElementById('samePersonalityUsers');
+      if (!usersContainer) return;
+      
+      const allUsers = testUsers;
+      const history = getTestHistory();
+      
+      // 首次加载时从后端获取数据
+      if (testUsers.length === 0) {
+        fetchUsersFromServer();
+        return;
+      }
+      
+      let samePersonalityUsers = [];
+      if (history.length === 0) {
+        samePersonalityUsers = allUsers.filter(user => user.personality === 'Emotional Player');
+      } else {
+        const currentUserPersonality = history[0].type;
+        samePersonalityUsers = allUsers.filter(user => user.personality === currentUserPersonality);
+      }
+      
+      if (samePersonalityUsers.length === 0) {
+        usersContainer.innerHTML = `
+          <div class="text-center py-8 text-gray-500 col-span-5">
+            <i class="fa fa-users text-4xl mb-4"></i>
+            <p>暂无与你具有相同人格的用户</p>
+            <p class="mt-2">完成测试后，其他用户也完成测试时会显示在这里</p>
+          </div>
+        `;
+        return;
+      }
+      
+      samePersonalityUsers.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+      
+      const PAGE_SIZE = 10;
+      const totalUsers = samePersonalityUsers.length;
+      const displayCount = Math.min(PAGE_SIZE, totalUsers);
+      const usersToDisplay = [];
+      for (let i = 0; i < displayCount; i++) {
+        usersToDisplay.push(samePersonalityUsers[(currentUserIndex + i) % totalUsers]);
+      }
+      
+      currentUserIndex = totalUsers > PAGE_SIZE
+        ? (currentUserIndex + PAGE_SIZE) % totalUsers
+        : 0;
+      
+      usersContainer.innerHTML = usersToDisplay.map(user => {
+        let avatarHTML = '';
+        const savedAvatar = localStorage.getItem('userAvatar');
+        if (savedAvatar) {
+          try {
+            const avatarData = JSON.parse(savedAvatar);
+            if (avatarData.type === 'preset') {
+              avatarHTML = `<div class="user-avatar" style="background-image: url('images/${avatarData.image}'); background-size: cover; background-position: center;"></div>`;
+            } else if (avatarData.type === 'custom') {
+              avatarHTML = `<div class="user-avatar" style="background-image: url('${avatarData.image}'); background-size: cover; background-position: center;"></div>`;
+            }
+          } catch (error) {
+            if (user.avatarImage) {
+              avatarHTML = `<div class="user-avatar" style="background-image: url('${user.avatarImage}'); background-size: cover; background-position: center;"></div>`;
+            } else {
+              const avatarChar = user.avatar ? String.fromCharCode(user.avatar) : '?';
+              avatarHTML = `<div class="user-avatar">${avatarChar}</div>`;
+            }
+          }
+        } else {
+          if (user.avatarImage) {
+            avatarHTML = `<div class="user-avatar" style="background-image: url('${user.avatarImage}'); background-size: cover; background-position: center;"></div>`;
+          } else {
+            const avatarChar = user.avatar ? String.fromCharCode(user.avatar) : '?';
+            avatarHTML = `<div class="user-avatar">${avatarChar}</div>`;
+          }
+        }
+        
+        return `
+          <div class="user-card flex flex-col items-center w-full">
+            <div class="user-name text-xs font-bold mb-1">${user.name}</div>
+            <div class="flex items-center gap-2">
+              ${avatarHTML}
+              <div class="user-personality text-xs text-gray-600">${getPersonalityName(user.personality)}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+      
+      const ITERATION_DURATION = 5000;
+      const INTERVAL_PER_USER = ITERATION_DURATION / displayCount;
+      const COOLDOWN_DURATION = 5000;
+      
+      const cards = usersContainer.querySelectorAll('.user-card');
+      
+      function showCard(index) {
+        if (index >= cards.length) {
+          cooldownTimer = setTimeout(() => {
+            cooldownTimer = null;
+            renderSamePersonalityUsers();
+          }, COOLDOWN_DURATION);
+          return;
+        }
+        cards[index].classList.add('visible');
+        iterationTimer = setTimeout(() => {
+          iterationTimer = null;
+          showCard(index + 1);
+        }, INTERVAL_PER_USER);
+      }
+      
+      showCard(0);
+    }
+
+    // 全局测试用户数据
+    let testUsers = [];
+
+    // 生成测试用户数据
+    function generateTestUsers() {
+      console.log('开始生成测试用户数据');
+      
+      testUsers = [];
+      const images = ['拿刀.png', 'ximi.png', '泡泡.png', '布偶.png', '猫.png', '美西螈.png', '石像.png', '大dd.png', '漂亮.png', '小狗.png'];
+      
+      for (let i = 1; i <= 10; i++) {
+        const userData = {
+          id: Date.now() + i,
+          name: `万事屋阿银${i}号`,
+          gameId: `Player${i}`,
+          personality: 'Bald Grinder',
+          timestamp: new Date().toISOString(),
+          avatar: 65 + i,
+          avatarImage: `images/${images[i-1]}`
+        };
+        testUsers.push(userData);
+      }
+      
+      console.log('测试用户数据已生成:', testUsers);
+    }
+
+    let currentUserIndex = 0;
+    let iterationTimer = null;
+    let cooldownTimer = null;
+
+    function stopIteration() {
+      if (iterationTimer !== null) {
+        clearTimeout(iterationTimer);
+        iterationTimer = null;
+      }
+      if (cooldownTimer !== null) {
+        clearTimeout(cooldownTimer);
+        cooldownTimer = null;
+      }
+    }
+
+    // 根据人格ID获取人格名称
+    function getPersonalityName(personalityId) {
+      const personality = personalities.find(p => p.id === personalityId);
+      return personality ? personality.name : personalityId;
+    }
+
+    // 预加载图片
+    function preloadImages() {
+      const images = [
+        'images/拿刀.png', 'images/彩虹.png', 'images/ximi.png',
+        'images/咸鱼.png', 'images/泡泡.png', 'images/布偶.png',
+        'images/猫.png', 'images/美西螈.png', 'images/石像.png',
+        'images/大dd.png', 'images/漂亮.png', 'images/小狗.png',
+        'images/飞鼠.png', 'images/法师.png', 'images/狐狸.png',
+        'images/background.png'
+      ];
+      
+      images.forEach(src => {
+        const img = new Image();
+        img.src = src;
+      });
+      
+      console.log('图片预加载完成');
+    }
+
+    // 处理游戏ID输入弹窗
+    function handleGameIdModal() {
+      const gameIdModal = document.getElementById('gameIdModal');
+      const gameIdInput = document.getElementById('gameIdInput');
+      const submitGameId = document.getElementById('submitGameId');
+      const skipGameId = document.getElementById('skipGameId');
+      
+      const savedGameId = localStorage.getItem('gameId');
+      const hasShownModal = localStorage.getItem('hasShownGameIdModal');
+      
+      if (savedGameId || hasShownModal) {
+        gameIdModal.classList.add('hidden');
+        return;
+      }
+      
+      localStorage.setItem('hasShownGameIdModal', 'true');
+      
+      submitGameId.addEventListener('click', function() {
+        const gameId = gameIdInput.value.trim();
+        if (gameId) {
+          localStorage.setItem('gameId', gameId);
+          gameIdModal.classList.add('hidden');
+        } else {
+          alert('请输入你的游戏ID');
+        }
+      });
+      
+      skipGameId.addEventListener('click', function() {
+        gameIdModal.classList.add('hidden');
+      });
+    }
+
+    // ——————————————————————————————————————————————————
+    // 云端对接入口：连接云服务器/数据库后，在此处替换数据来源。
+    // 只需将 testUsers 赋值为服务器返回的数组，其余遍历/动画逻辑无需改动。
+    // 数据量 > 10 时会自动分批滚动遍历；≤ 10 时直接展示全部。
+    // ——————————————————————————————————————————————————
+    function fetchUsersFromServer() {
+      const history = getTestHistory();
+      let currentPersonality = 'Emotional Player'; // 默认人格
+      
+      if (history.length > 0) {
+        currentPersonality = history[0].type;
+      }
+      
+      // 检查本地缓存
+      const cacheKey = `users_${currentPersonality}`;
+      const cachedData = localStorage.getItem(cacheKey);
+      const cacheTime = localStorage.getItem(`${cacheKey}_time`);
+      const now = Date.now();
+      
+      // 缓存有效期10分钟
+      if (cachedData && cacheTime && (now - parseInt(cacheTime)) < 10 * 60 * 1000) {
+        console.log('使用本地缓存的用户数据');
+        testUsers = JSON.parse(cachedData);
+        stopIteration();
+        currentUserIndex = 0;
+        renderSamePersonalityUsers();
+        return Promise.resolve(testUsers);
+      }
+      
+      // 从后端获取相同人格的用户数据
+      // ⚠️ 部署后需要将API地址改成你的实际后端地址
+      const API_BASE = 'https://ayin-production.up.railway.app'; // 后端API地址
+      // GitHub Pages部署时填写：'https://你的用户名.github.io/仓库名'
+      return fetch(API_BASE + `/api/users/same-personality?personality=${encodeURIComponent(currentPersonality)}&limit=50`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.success && data.data) {
+            console.log('从后端获取用户数据成功:', data.data);
+            testUsers = data.data;
+            // 存储到本地缓存
+            localStorage.setItem(cacheKey, JSON.stringify(data.data));
+            localStorage.setItem(`${cacheKey}_time`, now.toString());
+          } else {
+            console.log('从后端获取用户数据失败，使用本地测试数据');
+            // 保持本地测试数据作为备用
+          }
+          stopIteration();
+          currentUserIndex = 0;
+          renderSamePersonalityUsers();
+          return testUsers;
+        })
+        .catch(error => {
+          console.error('获取用户数据失败:', error);
+          // 后端API可能还未部署，使用本地测试数据作为备用
+          console.log('使用本地测试数据作为备用');
+          return testUsers;
+        });
+    }
+
+    // 处理用户资料编辑弹窗
+    function handleUserProfileModal() {
+      const userAvatar = document.getElementById('userAvatar');
+      const avatarText = document.getElementById('avatarText');
+      const userProfileModal = document.getElementById('userProfileModal');
+      const profileGameIdInput = document.getElementById('profileGameIdInput');
+      const saveProfile = document.getElementById('saveProfile');
+      const closeProfileModal = document.getElementById('closeProfileModal');
+      
+      // 加载用户数据
+      function loadUserData() {
+        const gameId = localStorage.getItem('gameId') || '';
+        
+        // 加载游戏ID
+        profileGameIdInput.value = gameId;
+      }
+      
+      // 点击头像打开弹窗
+      userAvatar.addEventListener('click', function() {
+        loadUserData();
+        userProfileModal.classList.remove('hidden');
+      });
+      
+      // 保存按钮点击事件
+      saveProfile.addEventListener('click', function() {
+        const gameId = profileGameIdInput.value.trim();
+        
+        // 计算字符数（中文算1个字符，英文2个算1个字符）
+        function calculateCharacterCount(text) {
+          let count = 0;
+          for (let i = 0; i < text.length; i++) {
+            const char = text[i];
+            if (/[\u4e00-\u9fa5]/.test(char)) {
+              // 中文字符
+              count += 1;
+            } else if (/[a-zA-Z]/.test(char)) {
+              // 英文字母
+              count += 0.5;
+            } else {
+              // 其他字符
+              count += 1;
+            }
+          }
+          return Math.ceil(count);
+        }
+        
+        const charCount = calculateCharacterCount(gameId);
+        
+        if (charCount > 10) {
+          // 超过字符限制，提示用户
+          alert('中文10字以内，英文20字以内');
+          return;
+        }
+        
+        // 保存游戏ID到本地存储
+        localStorage.setItem('gameId', gameId);
+        
+        // 清理旧的存储键
+        localStorage.removeItem('userAvatarImage');
+        localStorage.removeItem('userAvatar');
+        
+        // 更新用户名字显示
+        updateUserName();
+        
+        // 隐藏弹窗
+        userProfileModal.classList.add('hidden');
+      });
+      
+      // 更新用户名字显示
+      function updateUserName() {
+        const gameId = localStorage.getItem('gameId') || '游客';
+        // 检查是否已存在用户名字元素
+        let userNameElement = document.getElementById('userName');
+        if (!userNameElement) {
+          // 创建用户名字元素
+          userNameElement = document.createElement('div');
+          userNameElement.id = 'userName';
+          // 优化字体大小和易读性，添加背景半透明效果
+          userNameElement.className = 'text-sm text-white text-center mt-1 font-medium px-2 py-1 rounded-full bg-black bg-opacity-50 backdrop-blur-sm';
+          // 将名字添加到头像容器中
+          const avatarContainer = userAvatar.parentElement;
+          avatarContainer.appendChild(userNameElement);
+        }
+        // 更新用户名字
+        userNameElement.textContent = gameId;
+        
+        // 动态调整字体大小
+        function adjustFontSize(element, maxWidth = 120) {
+          let fontSize = 14; // 初始字体大小
+          element.style.fontSize = fontSize + 'px';
+          
+          // 逐渐减小字体大小，直到文本宽度小于最大宽度
+          while (element.offsetWidth > maxWidth && fontSize > 8) {
+            fontSize--;
+            element.style.fontSize = fontSize + 'px';
+          }
+        }
+        
+        // 调用字体大小调整函数
+        adjustFontSize(userNameElement);
+      }
+      
+      // 关闭按钮点击事件
+      closeProfileModal.addEventListener('click', function() {
+        userProfileModal.classList.add('hidden');
+      });
+      
+      // 点击弹窗外部关闭
+      userProfileModal.addEventListener('click', function(e) {
+        if (e.target === userProfileModal) {
+          userProfileModal.classList.add('hidden');
+        }
+      });
+      
+      // 初始化用户名字显示
+      updateUserName();
+    }
+
+    // 初始化
+    console.log('页面加载中...');
+    
+    // 预加载图片
+    preloadImages();
+    
+    const unlocked = getUnlockedPersonalities();
+    console.log('初始已解锁人格数量:', unlocked.length);
+    console.log('初始已解锁人格:', unlocked);
+    checkAndUnlockPersonality();
+    
+    // 生成测试用户数据
+    console.log('调用generateTestUsers函数');
+    generateTestUsers();
+    
+    // 立即渲染相同人格用户列表
+    console.log('调用renderSamePersonalityUsers函数');
+    renderSamePersonalityUsers();
+    
+    renderCollectionGrid();
+    handleGameIdModal();
+    handleUserProfileModal();
+    initAvatarSelection();
+  </script>
+
+  <!-- 交流群模块 --> 
+  <div class="group-card" id="groupCard"> 
+      <div class="group-card-inner"> 
+          <div class="group-icon">💬</div> 
+          <div class="group-text"> 
+              <span class="group-label">交流群</span> 
+              <span class="group-number">973913073</span> 
+          </div> 
+      </div> 
+  </div> 
+  
+  <!-- 复制提示 Toast --> 
+  <div class="copy-toast" id="copyToast">群号已复制到剪贴板</div>
+
+  <script>
+  // ==================== 交流群模块 JS ==================== 
+  
+  (function() { 
+      const groupCard = document.getElementById('groupCard'); 
+      const copyToast = document.getElementById('copyToast'); 
+      
+      // 触发计时器
+      let bottomTimer = null;
+
+      function checkScrollPosition() { 
+          // 获取滚动高度 
+          const scrollTop = window.pageYOffset || document.documentElement.scrollTop; 
+          // 获取视口高度 
+          const windowHeight = window.innerHeight; 
+          // 获取文档总高度 
+          const docHeight = document.documentElement.scrollHeight; 
+          
+          // 计算距离底部的距离 
+          const distanceFromBottom = docHeight - (scrollTop + windowHeight); 
+          
+          // 检查是否在底部
+          const isAtBottom = distanceFromBottom <= 10; // 10像素以内视为底部
+          
+          // 控制头像容器显示/隐藏
+          const avatarContainer = document.querySelector('.fixed.top-4.right-4');
+          if (scrollTop > 100) { // 滚动超过100像素时隐藏
+              avatarContainer.style.transform = 'translateY(-100px)';
+              avatarContainer.style.opacity = '0';
+          } else { // 滚动到顶部时显示
+              avatarContainer.style.transform = 'translateY(0)';
+              avatarContainer.style.opacity = '1';
+          }
+          
+          if (isAtBottom) { 
+              // 如果已经在底部，启动计时器
+              if (!bottomTimer) {
+                  bottomTimer = setTimeout(function() {
+                      groupCard.classList.add('show');
+                  }, 1000); // 1秒后显示
+              }
+          } else { 
+              // 如果不在底部，清除计时器并隐藏模块
+              if (bottomTimer) {
+                  clearTimeout(bottomTimer);
+                  bottomTimer = null;
+              }
+              groupCard.classList.remove('show');
+          } 
+      } 
+
+      // 监听滚动事件（使用 passive 提高性能） 
+      window.addEventListener('scroll', checkScrollPosition, { passive: true }); 
+      
+      // 页面加载时也检查一次（防止刷新后状态不对） 
+      window.addEventListener('load', checkScrollPosition); 
+
+      // 点击复制群号 
+      groupCard.addEventListener('click', function() { 
+          const groupNumber = '973913073'; 
+          
+          if (navigator.clipboard && navigator.clipboard.writeText) { 
+              navigator.clipboard.writeText(groupNumber).then(function() { 
+                  showToast(); 
+              }).catch(function() { 
+                  fallbackCopy(groupNumber); 
+              }); 
+          } else { 
+              fallbackCopy(groupNumber); 
+          } 
+      }); 
+
+      // 降级复制方法 
+      function fallbackCopy(text) { 
+          const textarea = document.createElement('textarea'); 
+          textarea.value = text; 
+          textarea.style.position = 'fixed'; 
+          textarea.style.opacity = '0'; 
+          document.body.appendChild(textarea); 
+          textarea.select(); 
+          
+          try { 
+              document.execCommand('copy'); 
+              showToast(); 
+          } catch (e) { 
+              console.error('复制失败', e); 
+          } 
+          
+          document.body.removeChild(textarea); 
+      } 
+
+      // 显示 Toast 
+      function showToast() { 
+          copyToast.classList.add('show'); 
+          setTimeout(function() { 
+              copyToast.classList.remove('show'); 
+          }, 2000); 
+      } 
+  })();
+  </script>
+  
+  <script>
+  // 初始化检查管理员按钮
+  window.addEventListener('DOMContentLoaded', function() {
+      // 检查是否应该显示管理员按钮
+      if (typeof checkAdminButtons === 'function') {
+          checkAdminButtons();
+      }
+  });
+  </script>
+
+</body>
+</html>

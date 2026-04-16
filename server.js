@@ -10,7 +10,7 @@ const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/ddnet-pers
 // 中间件
 app.use(cors());
 app.use(express.json());
-app.use(express.static('public'));
+app.use(express.static(__dirname));
 
 // 连接MongoDB
 mongoose.connect(MONGO_URI)

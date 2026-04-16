@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DDnet人格测试 - 报告查看</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  
+  <!-- 自定义配置 -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#0052D9',
+            secondary: '#FF6B8B',
+            accent: '#FFD93D',
+            dark: '#2C3E50',
+            light: '#F8F9FA'
+          },
+          fontFamily: {
+            sans: ['PingFang SC', 'Microsoft YaHei', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .text-shadow-sm {
+        text-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      }
+      .text-shadow-md {
+        text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      }
+      .text-shadow-lg {
+        text-shadow: 0 4px 8px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.08);
+      }
+      .btn-shadow {
+        box-shadow: 0 8px 20px rgba(0, 82, 217, 0.25);
+      }
+      .btn-hover {
+        transition: all 0.3s ease;
+      }
+      .btn-hover:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 25px rgba(0, 82, 217, 0.3);
+      }
+      .card-shadow {
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      }
+      .moe-gradient {
+        background: linear-gradient(135deg, #0052D9, #4A90E2);
+      }
+    }
+  </style>
+  
+  <style>
+    /* 全局基础样式 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: "PingFang SC", "Microsoft YaHei", "思源黑体", sans-serif;
+      line-height: 1.75;
+      letter-spacing: 0.02em;
+      color: #1a1a1a;
+      overflow-x: hidden;
+    }
+    
+    /* 背景图片样式 */
+    .bg-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+    
+    .bg-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.7;
+      filter: blur(3px);
+    }
+    
+    /* 内容容器 */
+    .content-container {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      position: relative;
+      z-index: 1;
+    }
+    
+    /* 过渡动画 */
+    .fade-in {
+      animation: fadeIn 1s ease-out forwards;
+    }
+    
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .scale-in {
+      animation: scaleIn 0.8s ease-out forwards;
+    }
+    
+    @keyframes scaleIn {
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+    
+    /* 报告图片容器 */
+    .report-image-container {
+      max-width: 90%;
+      max-height: 80vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      background: white;
+      transition: all 0.3s ease;
+    }
+    
+    .report-image-container:hover {
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+      transform: translateY(-5px);
+    }
+    
+    /* 报告图片 */
+    .report-image {
+      max-width: 100%;
+      max-height: 100%;
+      display: block;
+      object-fit: contain;
+    }
+    
+    /* 响应式设计 */
+    @media (max-width: 768px) {
+      .content-container {
+        padding: 1rem;
+      }
+      
+      .report-image-container {
+        max-width: 95%;
+        max-height: 70vh;
+        padding: 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 背景图片容器 -->
+  <div class="bg-container">
+    <img src="images/background.png" alt="背景" class="bg-image">
+  </div>
+  
+  <!-- 内容容器 -->
+  <div class="content-container">
+    <!-- 报告图片 -->
+    <div class="report-image-container fade-in mb-8">
+      <img src="images/report_template.png" alt="人格测试报告" class="report-image">
+    </div>
+    
+    <!-- 返回按钮 -->
+    <button id="backBtn" class="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-all duration-300">
+      <i class="fa fa-arrow-left mr-2"></i> 返回结果页
+    </button>
+  </div>
+
+  <!-- 交互JS -->
+  <script>
+    // 全局变量
+    let currentType = '';
+    
+    // 初始化页面
+    function init() {
+      console.log('Initializing report redirect page...');
+      
+      // 从URL参数获取人格类型
+      const urlParams = new URLSearchParams(window.location.search);
+      currentType = urlParams.get('type') || 'Balanced Player';
+      console.log('Current personality type:', currentType);
+      
+      // 绑定返回按钮事件
+      const backBtn = document.getElementById('backBtn');
+      if (backBtn) {
+        backBtn.addEventListener('click', function() {
+          window.location.href = `result.html?type=${encodeURIComponent(currentType)}`;
+        });
+      }
+    }
+    
+    // 页面加载完成后初始化
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

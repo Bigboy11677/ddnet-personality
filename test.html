@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DDnet人格测试 - 测试页面</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  
+  <!-- 自定义配置 -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#0052D9', // 匹配图片的蓝色
+          },
+          fontFamily: {
+            sans: ['PingFang SC', 'Microsoft YaHei', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .text-shadow-sm {
+        text-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      }
+      .btn-shadow {
+        box-shadow: 0 8px 20px rgba(0, 82, 217, 0.25);
+      }
+      .btn-hover {
+        transition: all 0.3s ease;
+      }
+      .btn-hover:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 25px rgba(0, 82, 217, 0.3);
+      }
+      .option-hover {
+        transition: all 0.3s ease;
+      }
+      .option-hover:hover {
+        transform: translateX(8px);
+      }
+    }
+  </style>
+  
+  <style>
+    /* 全局基础样式 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+  /* ════════════════════════════════════════
+     移动端响应式（≤768px）
+  ════════════════════════════════════════ */
+  @media (max-width: 768px) {
+
+    /* ── 主容器 ── */
+    .w-full.max-w-4xl {
+      max-width: 100%;
+    }
+
+    /* ── 头部 ── */
+    header.bg-primary.bg-opacity-90.text-white.py-6.px-8 {
+      padding: 0.6rem 1rem;
+    }
+    h1.text-3xl {
+      font-size: 1.05rem;
+      gap: 0.4rem;
+    }
+    header img.h-12 {
+      height: 1.8rem;
+    }
+
+    /* ── main：高度到页面3/4处，flex 布局让按钮贴底 ── */
+    main.p-8 {
+      padding: 1rem 1rem 1.25rem !important;
+      min-height: calc((100dvh - 56px) * 0.75);
+      display: flex !important;
+      flex-direction: column;
+    }
+
+    /* ── 进度条 ── */
+    .mb-8 {
+      margin-bottom: 1rem;
+    }
+    .flex.justify-between.text-sm.text-gray-600 {
+      font-size: 0.72rem;
+    }
+
+    /* ── 问题容器 ── */
+    #questionContainer {
+      margin-bottom: 1rem;
+    }
+
+    /* 题目行：固定高度区域，重做按钮用 visibility 控制，不影响布局 */
+    #questionContainer .flex.justify-between.items-center.mb-6 {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      margin-bottom: 0.85rem;
+      min-height: 88px; /* 题目文本行 + 重做按钮行，固定不变 */
+    }
+
+    /* 题目文本：独占整行 */
+    #questionText {
+      width: 100%;
+      font-weight: 700;
+      font-size: clamp(0.9rem, 2vw, 1.125rem);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      word-break: keep-all;
+      line-height: 1.6;
+      min-height: 1.6em; /* 至少一行高，防止空题时塌陷 */
+    }
+
+    /* 重做按钮：靠右对齐，固定尺寸，始终占位（visibility控制） */
+    #redoBtn {
+      align-self: flex-end;
+      font-size: 0.68rem;
+      padding: 0.3rem 0.75rem;
+      min-height: 30px;
+      height: 30px;
+      border-radius: 6px;
+      margin-top: 0.4rem;
+      flex-shrink: 0;
+    }
+
+    /* ── 选项：固定高度，与底部按钮视觉相近 ── */
+    .option {
+      height: 52px;
+      padding: 0 1rem;
+      min-height: 52px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+    }
+
+    .option p {
+      font-size: 0.9rem;
+      white-space: pre-wrap;
+      word-break: keep-all;
+      line-height: 1.4;
+    }
+
+    /* 选项间距 */
+    .space-y-3 > * + * {
+      margin-top: 0.55rem !important;
+    }
+
+    /* ── 底部按钮：贴合白色模块底部偏上 ── */
+    #btnRow {
+      display: flex !important;
+      flex-direction: row !important;
+      justify-content: space-between !important;
+      align-items: stretch !important;
+      gap: 0.5rem;
+      margin-top: auto;
+      padding-top: 1rem;
+    }
+
+    #btnLeft {
+      display: contents !important;
+    }
+
+    #historyBtn,
+    #prevBtn,
+    #nextBtn {
+      flex: 1 1 0;
+      min-width: 0;
+      height: 52px;
+      padding: 0 !important;
+      font-size: 0.78rem;
+      font-weight: 600;
+      border-radius: 12px !important;
+      display: flex !important;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      letter-spacing: 0.02em;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      transition: opacity 0.2s, transform 0.1s;
+    }
+
+    #historyBtn:active,
+    #prevBtn:active,
+    #nextBtn:active {
+      transform: scale(0.96);
+    }
+
+    #historyBtn {
+      background: #e8f0fe !important;
+      color: #3b5bdb !important;
+      border: 1.5px solid #b8c8fa;
+    }
+
+    #prevBtn {
+      background: #f1f3f5 !important;
+      color: #495057 !important;
+      border: 1.5px solid #dee2e6;
+    }
+
+    #nextBtn {
+      background: #0052D9 !important;
+      color: #fff !important;
+      border: none;
+      box-shadow: 0 4px 12px rgba(0,82,217,0.28);
+    }
+
+    #prevBtn:disabled,
+    #nextBtn:disabled {
+      opacity: 0.38 !important;
+      box-shadow: none;
+    }
+
+    #historyBtn i,
+    #prevBtn i,
+    #nextBtn i {
+      font-size: 0.95rem;
+      margin: 0 !important;
+    }
+
+    /* ── 历史记录模态框 ── */
+    #historyModal .max-w-4xl {
+      max-width: 95vw;
+      max-height: 88vh;
+      padding: 0.75rem !important;
+    }
+    #historyModal .flex.justify-between.items-center.mb-4 {
+      margin-bottom: 0.5rem !important;
+      padding-bottom: 0.4rem !important;
+    }
+    #historyModal h2 { font-size: 1rem !important; }
+
+    #historyContainer {
+      max-height: calc(88vh - 100px);
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    #historyContainer .bg-gray-50 {
+      padding: 0.35rem 0.5rem !important;
+      margin-bottom: 0.3rem !important;
+      border-radius: 6px !important;
+    }
+    #historyContainer .flex.justify-between.items-start {
+      margin-bottom: 0.15rem !important;
+    }
+    #historyContainer h3 {
+      font-size: 0.7rem !important;
+      font-weight: 700;
+      margin-bottom: 0 !important;
+      line-height: 1.2;
+    }
+    #historyContainer span.text-sm { font-size: 0.6rem !important; }
+
+    #historyContainer p.text-gray-700 {
+      font-size: 0.65rem !important;
+      line-height: 1.3;
+      margin-bottom: 0.2rem !important;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    #historyContainer .bg-primary {
+      padding: 0.2rem 0.4rem !important;
+      border-radius: 4px !important;
+    }
+    #historyContainer .bg-primary p {
+      font-size: 0.62rem !important;
+      line-height: 1.3;
+    }
+
+    #historyModal .mt-4.pt-4 {
+      margin-top: 0.4rem !important;
+      padding-top: 0.4rem !important;
+    }
+    #closeHistoryBtn2 {
+      padding: 0.4rem !important;
+      font-size: 0.78rem !important;
+    }
+
+    /* 空状态 */
+    #historyContainer .text-center.py-12 { padding: 1rem 0; }
+    #historyContainer .text-4xl { font-size: 2rem; }
+  }
+
+  /* ── 更小屏幕（≤480px）微调 ── */
+  @media (max-width: 480px) {
+    main.p-8 { padding: 0.8rem 0.8rem 1rem !important; }
+    h1.text-3xl { font-size: 0.95rem; }
+    header img.h-12 { height: 1.6rem; }
+
+    #questionText { 
+      font-size: clamp(0.8rem, 4vw, 0.88rem);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* 题目行在小屏同样固定高度 */
+    #questionContainer .flex.justify-between.items-center.mb-6 {
+      min-height: 80px;
+    }
+
+    .option {
+      height: 48px;
+      min-height: 48px;
+    }
+    .option p { font-size: 0.84rem; }
+
+    #historyBtn, #prevBtn, #nextBtn {
+      height: 48px;
+      font-size: 0.72rem;
+    }
+
+    #btnRow { gap: 0.4rem; }
+  }
+    
+    /* 触摸反馈 */
+    button:active,
+    .option:active {
+      transform: scale(0.98);
+      transition: transform 0.1s ease;
+    }
+    
+    /* 选项触摸优化 */
+    .option {
+      cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+    }
+    
+    /* 按钮触摸优化 */
+    button {
+      -webkit-tap-highlight-color: transparent;
+      min-height: 44px;
+      min-width: 44px;
+    }
+    
+    /* 链接触摸优化 */
+    a {
+      -webkit-tap-highlight-color: transparent;
+      min-height: 44px;
+      min-width: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    /* 触摸反馈优化 */
+    .cursor-pointer:active {
+      transform: scale(0.98);
+      transition: transform 0.1s ease;
+    }
+    
+    /* 加载优化 */
+    .bg-cover {
+      background-size: cover;
+      background-position: center;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen bg-[url('images/back.png')] bg-cover bg-center font-sans">
+  <!-- 主容器 -->
+  <div class="w-full max-w-4xl mx-auto min-h-screen">
+    <!-- 头部 -->
+    <header class="bg-primary bg-opacity-90 text-white py-6 px-8">
+      <div class="flex items-center justify-between">
+        <h1 class="text-3xl font-bold flex items-center gap-2">
+          <img src="images/ddracenetwork.png" alt="DDraceNetwork" class="h-12 w-auto">
+          DDnet人格测试
+        </h1>
+        <a href="index.html" class="text-white hover:underline text-lg">
+          首页
+        </a>
+      </div>
+    </header>
+    
+    <!-- 测试内容 -->
+    <main class="p-8 bg-white bg-opacity-80 rounded-b-lg shadow-lg">
+      <!-- 进度条 -->
+      <div class="mb-8">
+        <div class="flex justify-between text-sm text-gray-600 mb-2">
+          <span>问题 <span id="currentQuestion">1</span>/30</span>
+          <span>完成度 <span id="progressPercent">3%</span></span>
+        </div>
+        <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+          <div id="progressBar" class="h-full bg-primary transition-all duration-300" style="width: 3%"></div>
+        </div>
+      </div>
+      
+      <!-- 问题区域 -->
+      <div id="questionContainer" class="mb-8">
+        <div class="flex justify-between items-center mb-6">
+          <p id="questionText" class="text-lg font-semibold"></p>
+          <button id="redoBtn" type="button" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium btn-hover cursor-pointer ml-4">
+            <i class="fa fa-refresh mr-2"></i> 重做
+          </button>
+        </div>
+        <div id="optionsContainer" class="space-y-3">
+        </div>
+      </div>
+      
+      <!-- 按钮区域 -->
+      <div id="btnRow" class="flex justify-between items-center mt-12">
+        <div id="btnLeft" class="flex items-center space-x-4">
+          <button id="historyBtn" class="px-4 py-2 bg-blue-100 text-primary rounded-lg font-medium btn-hover cursor-pointer">
+            <i class="fa fa-history mr-2"></i> 历史记录
+          </button>
+          <button id="prevBtn" class="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+            <i class="fa fa-arrow-left mr-2"></i> 上一题
+          </button>
+        </div>
+        <button id="nextBtn" class="px-6 py-3 bg-primary text-white rounded-lg font-medium btn-shadow btn-hover disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+          下一题 <i class="fa fa-arrow-right ml-2"></i>
+        </button>
+      </div>
+    </main>
+  </div>
+
+
+  
+  <!-- 历史记录模态框 -->
+  <div id="historyModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white p-6 rounded-xl max-w-4xl w-full max-h-[80vh] mx-4 overflow-hidden flex flex-col">
+      <div class="flex justify-between items-center mb-4 border-b pb-4">
+        <h2 class="text-2xl font-bold">答题历史记录</h2>
+        <button id="closeHistoryBtn" class="text-gray-500 hover:text-gray-700">
+          <i class="fa fa-times text-xl"></i>
+        </button>
+      </div>
+      <div id="historyContainer" class="flex-1 overflow-y-auto pr-2">
+        <div class="space-y-4">
+          <!-- 历史记录项将在这里动态生成 -->
+        </div>
+      </div>
+      <div class="mt-4 pt-4 border-t">
+        <button id="closeHistoryBtn2" class="w-full px-6 py-3 bg-primary text-white rounded-lg font-medium btn-shadow btn-hover">
+          关闭
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // DDnet测试问题（按七维独立计分：-1 / 0 / +1，未提及维度默认 0）
+    const questions = [
+      { id: 1, text: '在跑图中遇到偷跑的 Tee，你会：', options: [
+        { text: '骂他', scores: { social: -1, decision: -1, emotion: -1, humor: 0, responsibility: 0, challenge: 0, confidence: 0 } },
+        { text: '自己也偷跑', scores: { social: 0, decision: -1, emotion: -1, humor: 0, responsibility: -1, challenge: 0, confidence: 1 } },
+        { text: '不理会，等待后方队友', scores: { social: 1, decision: 1, emotion: 1, humor: 0, responsibility: 1, challenge: 0, confidence: 0 } },
+        { text: '也许他在破点？', scores: { social: 0, decision: 0, emotion: 0, humor: 1, responsibility: 0, challenge: 0, confidence: 0 } }
+      ]},
+      { id: 2, text: '当队友落水，但后面还有队伍，你会：', options: [
+        { text: '二话不说救他', scores: { social: 1, decision: -1, emotion: 0, humor: 0, responsibility: 1, challenge: 0, confidence: 1 } },
+        { text: '直接跑路', scores: { social: 0, decision: 0, emotion: 0, humor: 0, responsibility: -1, challenge: 0, confidence: 0 } },
+        { text: '看情况再决定', scores: { social: 0, decision: 1, emotion: 0, humor: 0, responsibility: 0, challenge: 1, confidence: 0 } },
+        { text: '扣问号', scores: { social: 0, decision: 0, emotion: 0, humor: 1, responsibility: 0, challenge: 0, confidence: 0 } }
+      ]},
+      { id: 3, text: '遇到萌新一直卡关，你会：', options: [
+        { text: '觉得他拖后腿', scores: { social: -1, decision: 0, emotion: -1, humor: 0, responsibility: -1, challenge: 0, confidence: 0 } },
+        { text: '直接换人', scores: { social: 0, decision: -1, emotion: 0, humor: 0, responsibility: -1, challenge: -1, confidence: 0 } },
+        { text: '默默等待并安慰', scores: { social: 1, decision: 0, emotion: 1, humor: 0, responsibility: 1, challenge: 0, confidence: 0 } },
+        { text: '拖拽他', scores: { social: 1, decision: 1, emotion: 1, humor: 0, responsibility: 1, challenge: 1, confidence: 0 } }
+      ]},
+      { id: 4, text: '看到别人破记录，你会：', options: [
+        { text: '尝试超越', scores: { social: 0, decision: 0, emotion: 1, humor: 0, responsibility: 0, challenge: 1, confidence: 1 } },
+        { text: '为他点赞', scores: { social: 0, decision: 0, emotion: 0, humor: 0, responsibility: 0, challenge: 0, confidence: 0 } },
+        { text: '想知道秘诀', scores: { social: 0, decision: 0, emotion: 0, humor: 0, responsibility: 0, challenge: 1, confidence: 0 } },
+        { text: '觉得自己不可能', scores: { social: 0, decision: 0, emotion: 0, humor: 0, responsibility: 0, challenge: -1, confidence: -1 } }
+      ]},
+      { id: 5, text: '当你被卡在难点超过 5 分钟，你会：', options: [
+        { text: '坚持不放弃', scores: { social: 0, decision: -1, emotion: 1, humor: 0, responsibility: 0, challenge: 1, confidence: 1 } },
+        { text: '直接换图', scores: { social: 0, decision: 1, emotion: 0, humor: 0, responsibility: 0, challenge: -1, confidence: -1 } },
+        { text: '求助队友', scores: { social: 1, decision: 1, emotion: 0, humor: 0, responsibility: 0, challenge: -1, confidence: -1 } },
+        { text: '我已急哭', scores: { social: 0, decision: 0, emotion: -1, humor: 1, responsibility: 0, challenge: 0, confidence: -1 } }
+      ]},
+      { id: 6, text: '当你被队友抛弃在后面，你会：', options: [
+        { text: '艾特前面的说 B', scores: { social: 1, decision: 1, emotion: 0, humor: 0, responsibility: 0, challenge: 0, confidence: 0 } },
+        { text: '默默旁观', scores: { social: -1, decision: 0, emotion: 1, humor: 0, responsibility: 0, challenge: 0, confidence: 0 } },
+        { text: '骂街', scores: { social: -1, decision: -1, emotion: -1, humor: 0, responsibility: 0, challenge: 0, confidence: 0 } },
+        { text: '不信任并且k', scores: { social: -1, decision: 0, emotion: -1, humor: 0, responsibility: -1, challenge: 0, confidence: 0 } }
+      ]},
+      { id: 7, text: '当看到别人的尴尬时刻（比如碰到一格刺），你会：', options: [
+        { text: '鼓励他', scores: { social: 1, decision: 0, emotion: 1, humor: 0, responsibility: 1, challenge: 0, confidence: 0 } },
+        { text: '偷笑', scores: { social: 0, decision: 0, emotion: 0, humor: 1, responsibility: 0, challenge: 0, confidence: 0 } },
+        { text: '无感', scores: { social: 0, decision: 0, emotion: 0, humor: 0, responsibility: 0, challenge: 0, confidence: 0 } },
+        { text: '诗人？', scores: { social: 1, decision: 0, emotion: 0, humor: 1, responsibility: 0, challenge: 0, confidence: 0 } }
+      ]},
+      { id: 8, text: '你觉得团队合作最重要的是：', options: [
+        { text: '沟通', scores: { social: 1, decision: 1, emotion: 0, humor: 0, responsibility: 1, challenge: 0, confidence: 0 } },
+        { text: '高手', scores: { social: 0, decision: 0, emotion: 0, humor: 0, responsibility: -1, challenge: 1, confidence: 0 } },
+        { text: '合作', scores: { social: 1, decision: 0, emotion: 1, humor: 0, responsibility: 1, challenge: 0, confidence: 0 } },
+        { text: '专注', scores: { social: -1, decision: 0, emotion: 0, humor: 0, responsibility: 1, challenge: 0, confidence: 0 } }
+      ]},
+      { id: 9, text: '如果有人发消息刷屏，你会：', options: [
+        { text: '觉得很烦', scores: { social: -1, decision: 0, emotion: -1, humor: 0, responsibility: 0, challenge: 0, confidence: 0 } },
+        { text: '直接屏蔽', scores: { social: -1, decision: 1, emotion: 0, humor: 0, responsibility: 0, challenge: 0, confidence: 0 } },
+        { text: '忽略', scores: { social: 0, decision: 1, emotion: 1, humor: 0, responsibility: 0, challenge: 0, confidence: 0 } },
+        { text: '批判性加入', scores: { social: 1, decision: 0, emotion: 0, humor: 1, responsibility: 0, challenge: 0, confidence: 0 } }
+      ]},
+      { id: 10, text: '你更喜欢哪类地图：', options: [
+        { text: '需要高度合作的地图', scores: { social: 1, decision: 0, emotion: 0, humor: 0, responsibility: 0, challenge: 1, confidence: 0 } },
+        { text: 'Solo 地图', scores: { social: -1, decision: 0, emotion: 0, humor: 0, responsibility: 0, challenge: 1, confidence: 1 } },
+        { text: '极难挑战地图', scores: { social: 0, decision: 0, emotion: 1, humor: 0, responsibility: 0, challenge: 1, confidence: 1 } },
+        { text: '屌图', scores: { social: 1, decision: 0, emotion: 1, humor: 1, responsibility: 0, challenge: 0, confidence: 0 } }
+      ]},
+      { id: 11, text: '你喜欢用本名还是马甲：', options: [
+        { text: '本名', scores: { social: 1, decision: 0, emotion: 0, humor: 0, responsibility: 0, challenge: 0, confidence: 0 } },
+        { text: '马甲', scores: { social: -1, decision: 0, emotion: 0, humor: 0, responsibility: 0, challenge: 0, confidence: 0 } },
+        { text: '看情况而定', scores: { social: 0, decision: 1, emotion: 0, humor: 0, responsibility: 0, challenge: 0, confidence: 0 } },
+        { text: '一天一个马甲不解释', scores: { social: 0, decision: 0, emotion: 0, humor: 1, responsibility: 0, challenge: 0, confidence: 0 } }
+      ]},
+      { id: 12, text: '当别人打趣你操作渣，你会：', options: [
+        { text: '回击', scores: { social: -1, decision: 0, emotion: -1, humor: 0, responsibility: 0, challenge: 0, confidence: 1 } },
+        { text: '接受并尝试改进', scores: { social: 1, decision: 1, emotion: 1, humor: 0, responsibility: 0, challenge: 1, confidence: 0 } },
+        { text: '有点不爽', scores: { social: 0, decision: 0, emotion: -1, humor: 0, responsibility: 0, challenge: 0, confidence: 0 } },
+        { text: '那咋了', scores: { social: 1, decision: 0, emotion: 1, humor: 1, responsibility: 0, challenge: 0, confidence: 0 } }
+      ]},
+      { id: 13, text: '你觉得队友失误时应该：', options: [
+        { text: '帮他', scores: { social: 1, decision: 1, emotion: 1, humor: 0, responsibility: 1, challenge: 0, confidence: 0 } },
+        { text: '指出错误', scores: { social: 1, decision: 0, emotion: 0, humor: 0, responsibility: 1, challenge: 0, confidence: 1 } },
+        { text: '默默玩自己的', scores: { social: -1, decision: 0, emotion: 0, humor: 0, responsibility: 0, challenge: 0, confidence: 0 } },
+        { text: '诗人我吃', scores: { social: 1, decision: 0, emotion: 1, humor: 1, responsibility: 0, challenge: 0, confidence: 0 } }
+      ]},
+      { id: 14, text: '当别人请求帮忙，你会：', options: [
+        { text: '立刻答应', scores: { social: 1, decision: 0, emotion: 1, humor: 0, responsibility: 1, challenge: 0, confidence: 0 } },
+        { text: '看情况帮不帮', scores: { social: 0, decision: 1, emotion: 0, humor: 0, responsibility: 0, challenge: 0, confidence: 0 } },
+        { text: '不太愿意', scores: { social: -1, decision: 0, emotion: 0, humor: 0, responsibility: -1, challenge: 0, confidence: 0 } },
+        { text: '等他k了之后回他刚才没看到', scores: { social: 0, decision: 0, emotion: 0, humor: 1, responsibility: -1, challenge: 0, confidence: 0 } }
+      ]},
+      { id: 15, text: '在语音聊天里，你更倾向：', options: [
+        { text: '主动说话', scores: { social: 1, decision: 0, emotion: 0, humor: 0, responsibility: 0, challenge: 0, confidence: 0 } },
+        { text: '偶尔回应', scores: { social: 0, decision: 0, emotion: 0, humor: 0, responsibility: 0, challenge: 0, confidence: 0 } },
+        { text: '少语无言', scores: { social: -1, decision: 0, emotion: 0, humor: 0, responsibility: 0, challenge: 0, confidence: 0 } },
+        { text: '静默观察', scores: { social: -1, decision: 1, emotion: 0, humor: 0, responsibility: 0, challenge: 0, confidence: 0 } }
+      ]},
+      { id: 16, text: '你更喜欢的 DDNet 游戏体验是：', options: [
+        { text: '与朋友一起跑图', scores: { social: 1, decision: 0, emotion: 1, humor: 0, responsibility: 0, challenge: 0, confidence: 0 } },
+        { text: 'Solo', scores: { social: -1, decision: 0, emotion: 0, humor: 0, responsibility: 0, challenge: 1, confidence: 1 } },
+        { text: '看别人玩', scores: { social: 0, decision: 0, emotion: 1, humor: 1, responsibility: 0, challenge: 0, confidence: 0 } },
+        { text: '只去人多的服务器', scores: { social: 1, decision: 0, emotion: 1, humor: 0, responsibility: 0, challenge: 0, confidence: 0 } }
+      ]},
+      { id: 17, text: '你认为一个队伍取得胜利的关键是：', options: [
+        { text: '明确分工', scores: { social: 1, decision: 1, emotion: 0, humor: 0, responsibility: 1, challenge: 0, confidence: 0 } },
+        { text: '技术最强的人', scores: { social: 0, decision: 0, emotion: 0, humor: 0, responsibility: -1, challenge: 1, confidence: 0 } },
+        { text: '战术计划', scores: { social: 1, decision: 1, emotion: 0, humor: 0, responsibility: 0, challenge: 0, confidence: 0 } },
+        { text: '缺一不可', scores: { social: 1, decision: 1, emotion: 0, humor: 0, responsibility: 1, challenge: 1, confidence: 0 } }
+      ]},
+      { id: 18, text: '你被别人拖拽着跑图，你的第一感觉是：', options: [
+        { text: '感激', scores: { social: 1, decision: 0, emotion: 1, humor: 0, responsibility: 0, challenge: 0, confidence: 0 } },
+        { text: '无感', scores: { social: 0, decision: 0, emotion: 0, humor: 0, responsibility: 0, challenge: 0, confidence: 0 } },
+        { text: '我自己能跑别拖我', scores: { social: -1, decision: 0, emotion: 0, humor: 0, responsibility: 0, challenge: 1, confidence: 1 } },
+        { text: '不耐烦', scores: { social: -1, decision: 0, emotion: -1, humor: 0, responsibility: 0, challenge: 0, confidence: 0 } }
+      ]},
+      { id: 19, text: '面对非玩笑的嘲讽和挖苦，你更可能：', options: [
+        { text: '以幽默回应', scores: { social: 1, decision: 0, emotion: 1, humor: 1, responsibility: 0, challenge: 0, confidence: 0 } },
+        { text: '保持沉默', scores: { social: -1, decision: 1, emotion: 0, humor: 0, responsibility: 0, challenge: 0, confidence: 0 } },
+        { text: '感到不悦', scores: { social: 0, decision: 0, emotion: -1, humor: 0, responsibility: 0, challenge: 0, confidence: 0 } },
+        { text: '开骂然后发B站', scores: { social: -1, decision: 0, emotion: -1, humor: 0, responsibility: -1, challenge: 0, confidence: 0 } }
+      ]},
+      { id: 20, text: '在一个队伍中你更像：', options: [
+        { text: '带飞者', scores: { social: 1, decision: 0, emotion: 0, humor: 0, responsibility: 1, challenge: 1, confidence: 1 } },
+        { text: '混图者', scores: { social: 0, decision: 0, emotion: 0, humor: 0, responsibility: 0, challenge: 0, confidence: 0 } },
+        { text: '拖累者', scores: { social: -1, decision: 0, emotion: -1, humor: 0, responsibility: -1, challenge: 0, confidence: -1 } },
+        { text: '燕子', scores: { social: 1, decision: 0, emotion: 0, humor: 1, responsibility: 0, challenge: 0, confidence: 0 } }
+      ]},
+      { id: 21, text: '当你完成一个特别难的地图时你会：', options: [
+        { text: '兴奋庆祝', scores: { social: 1, decision: 0, emotion: 1, humor: 0, responsibility: 0, challenge: 0, confidence: 1 } },
+        { text: '灵活分享心得', scores: { social: 1, decision: 0, emotion: 0, humor: 0, responsibility: 1, challenge: 0, confidence: 0 } },
+        { text: '低调', scores: { social: -1, decision: 0, emotion: 1, humor: 0, responsibility: 0, challenge: 0, confidence: 0 } },
+        { text: '到处艾特好友："你怎么知道我过了某某图？"', scores: { social: 1, decision: 0, emotion: 1, humor: 1, responsibility: 0, challenge: 0, confidence: 0 } }
+      ]},
+      { id: 22, text: '你更看重游戏中的：', options: [
+        { text: '合作与友谊', scores: { social: 1, decision: 0, emotion: 1, humor: 0, responsibility: 1, challenge: 0, confidence: 0 } },
+        { text: '技巧与成就', scores: { social: 0, decision: 0, emotion: 1, humor: 0, responsibility: 0, challenge: 1, confidence: 1 } },
+        { text: '快乐与乐趣', scores: { social: 0, decision: 0, emotion: 1, humor: 1, responsibility: 0, challenge: 0, confidence: 0 } },
+        { text: '排名与挑战', scores: { social: -1, decision: 0, emotion: 0, humor: 0, responsibility: 0, challenge: 1, confidence: 1 } }
+      ]},
+      { id: 23, text: '你在团队中喜欢什么位置？', options: [
+        { text: '邪恶偷跑', scores: { social: -1, decision: -1, emotion: 0, humor: 0, responsibility: -1, challenge: 1, confidence: 0 } },
+        { text: '神秘殿后', scores: { social: 1, decision: 1, emotion: 0, humor: 0, responsibility: 1, challenge: 0, confidence: 0 } },
+        { text: '偶尔神秘偶尔邪恶', scores: { social: 0, decision: 1, emotion: 0, humor: 0, responsibility: 0, challenge: 0, confidence: 0 } },
+        { text: '技术原因，偷跑or殿后都难以做到', scores: { social: 0, decision: 0, emotion: 0, humor: 1, responsibility: 0, challenge: 0, confidence: -1 } }
+      ]},
+      { id: 24, text: '当有人在游戏中向你打招呼，你会？', options: [
+        { text: '主动聊天', scores: { social: 1, decision: 0, emotion: 1, humor: 0, responsibility: 0, challenge: 0, confidence: 0 } },
+        { text: '简单回复，不多说', scores: { social: 0, decision: 0, emotion: 0, humor: 0, responsibility: 1, challenge: 0, confidence: 0 } },
+        { text: '当没看到', scores: { social: -1, decision: 0, emotion: 0, humor: 0, responsibility: -1, challenge: 0, confidence: 0 } },
+        { text: '发个爱心表情回应', scores: { social: 1, decision: 0, emotion: 1, humor: 1, responsibility: 0, challenge: 0, confidence: 0 } }
+      ]},
+      { id: 25, text: '你更喜欢发什么表情？', options: [
+        { text: '问号', scores: { social: 0, decision: 0, emotion: 0, humor: 1, responsibility: 0, challenge: 0, confidence: 0 } },
+        { text: 'ooop', scores: { social: 1, decision: 0, emotion: 1, humor: 1, responsibility: 0, challenge: 0, confidence: 0 } },
+        { text: '笑脸', scores: { social: 1, decision: 0, emotion: 1, humor: 0, responsibility: 1, challenge: 0, confidence: 0 } },
+        { text: '抱歉', scores: { social: 1, decision: 0, emotion: 0, humor: 0, responsibility: 1, challenge: 0, confidence: 0 } }
+      ]},
+      { id: 26, text: '遇到高难度分支，你通常？', options: [
+        { text: '直接走难的', scores: { social: 0, decision: -1, emotion: 0, humor: 0, responsibility: 0, challenge: 1, confidence: 1 } },
+        { text: '直接走简单的', scores: { social: 0, decision: 0, emotion: 0, humor: 0, responsibility: 0, challenge: -1, confidence: -1 } },
+        { text: '看情况', scores: { social: 0, decision: 1, emotion: 0, humor: 0, responsibility: 0, challenge: 0, confidence: 0 } },
+        { text: '不仅我要走难的，我还要拖拽tee过去', scores: { social: 1, decision: 0, emotion: 0, humor: 1, responsibility: 0, challenge: 1, confidence: 0 } }
+      ]},
+      { id: 27, text: '平时用什么皮肤？', options: [
+        { text: '狐狸', scores: { social: 0, decision: 0, emotion: 0, humor: 0, responsibility: 0, challenge: 0, confidence: 0 } },
+        { text: '黄豆', scores: { social: 0, decision: 0, emotion: 0, humor: 0, responsibility: 0, challenge: 0, confidence: 0 } },
+        { text: '可爱皮肤', scores: { social: 1, decision: 0, emotion: 1, humor: 0, responsibility: 0, challenge: 0, confidence: 0 } },
+        { text: '搞怪皮肤', scores: { social: 1, decision: 0, emotion: 1, humor: 1, responsibility: 0, challenge: 0, confidence: 0 } }
+      ]},
+      { id: 28, text: '遇到突发意外时，你通常？', options: [
+        { text: '发ooop表情', scores: { social: 1, decision: 0, emotion: 1, humor: 1, responsibility: 0, challenge: 0, confidence: 0 } },
+        { text: '直接旁观不解释', scores: { social: -1, decision: 0, emotion: 0, humor: 0, responsibility: -1, challenge: 0, confidence: 0 } },
+        { text: '解释', scores: { social: 1, decision: 1, emotion: 0, humor: 0, responsibility: 1, challenge: 0, confidence: 0 } },
+        { text: '卡了', scores: { social: 0, decision: 0, emotion: 0, humor: 1, responsibility: -1, challenge: 0, confidence: 0 } }
+      ]},
+      { id: 29, text: '喜欢跑图还是救人？', options: [
+        { text: '追求跑图', scores: { social: 0, decision: 0, emotion: 0, humor: 0, responsibility: -1, challenge: 1, confidence: 1 } },
+        { text: '喜欢救人，照顾队友', scores: { social: 1, decision: 0, emotion: 1, humor: 0, responsibility: 1, challenge: 0, confidence: 0 } },
+        { text: '两者结合', scores: { social: 1, decision: 1, emotion: 0, humor: 0, responsibility: 1, challenge: 1, confidence: 0 } },
+        { text: '都不会，我只会恰', scores: { social: 1, decision: 0, emotion: 0, humor: 1, responsibility: -1, challenge: 0, confidence: 0 } }
+      ]},
+      { id: 30, text: '你面对Last，且队友给你上压力时，你会？', options: [
+        { text: '迎难而上', scores: { social: 0, decision: 1, emotion: 0, humor: 0, responsibility: 0, challenge: 1, confidence: 1 } },
+        { text: '稍有压力就迟迟不敢出手', scores: { social: 0, decision: -1, emotion: -1, humor: 0, responsibility: 0, challenge: -1, confidence: -1 } },
+        { text: '压力大直接似掉', scores: { social: 0, decision: 0, emotion: -1, humor: 0, responsibility: 0, challenge: -1, confidence: -1 } },
+        { text: '很难的地图part过了，但空间超大却没救起tee然后发一句卡了', scores: { social: 0, decision: 0, emotion: 0, humor: 1, responsibility: -1, challenge: 0, confidence: 0 } }
+      ]}
+    ];
+
+    // DDnet类型数据（基于七个角度）
+    const ddnetTypes = {
+      'Carry Goat': {
+        name: '带飞者',
+        description: '典型的主导型技术人格——以技术实力为核心自信来源，同时兼具指导欲与强烈的存在感需求。',
+        ranges: {
+          social: [8, 12],
+          decision: [6, 10],
+          emotion: [6, 9],
+          humor: [3, 6],
+          responsibility: [9, 12],
+          challenge: [7, 10],
+          confidence: [8, 11]
+        },
+        rarity: 2.0
+      },
+      'Team Supporter': {
+        name: '团队依赖户',
+        description: '专注于帮助他人，如殿后或救援，在KOG模式中常见。选择选项时优先考虑团队利益，避免冲突。',
+        ranges: {
+          social: [7, 11],
+          decision: [4, 7],
+          emotion: [7, 11],
+          humor: [2, 5],
+          responsibility: [9, 12],
+          challenge: [3, 6],
+          confidence: [4, 7]
+        },
+        rarity: 12.0
+      },
+      'Bald Grinder': {
+        name: '独攀者',
+        description: '"独攀者"的世界是一条向上延伸的斜坡。他并不是拒绝他人，而是相信努力的本质只有个人能承担。',
+        ranges: {
+          social: [-6, -1],
+          decision: [9, 13],
+          emotion: [5, 9],
+          humor: [0, 3],
+          responsibility: [-9, 3],
+          challenge: [11, 14],
+          confidence: [9, 13]
+        },
+        rarity: 2.9
+      },
+      'Jokester': {
+        name: '整活艺术家',
+        description: '"整活艺术家"是典型的社交型创意人格。他的主要驱动力不是胜负，而是让参与过程变得有趣。',
+        ranges: {
+          social: [7, 11],
+          decision: [2, 5],
+          emotion: [7, 11],
+          humor: [11, 14],
+          responsibility: [-1, 3],
+          challenge: [1, 4],
+          confidence: [4, 7]
+        },
+        rarity: 6.0
+      },
+      'Rational Thinker': {
+        name: '策略大师',
+        description: '"策略大师"是一类理性型思维人格，擅长在复杂局势中冷静地找出可行路径。',
+        ranges: {
+          social: [2, 5],
+          decision: [11, 14],
+          emotion: [2, 5],
+          humor: [-1, 2],
+          responsibility: [7, 11],
+          challenge: [4, 7],
+          confidence: [3, 6]
+        },
+        rarity: 15.0
+      },
+      'Emotional Player': {
+        name: '键盘粉碎者',
+        description: '情绪波动大，易怒或兴奋，如卡关时急哭或骂街。选项偏向极端，影响团队氛围。',
+        ranges: {
+          social: [-11, 5],
+          decision: [-9, 3],
+          emotion: [-13, 7],
+          humor: [-1, 2],
+          responsibility: [-8, 2],
+          challenge: [-6, -1],
+          confidence: [-11, 5]
+        },
+        rarity: 0.1
+      },
+      'Responsible Anchor': {
+        name: '背锅侠',
+        description: '坚守殿后或救援角色，确保团队进度，在DDR模式中关键。常选责任导向选项，避免偷跑。',
+        ranges: {
+          social: [4, 8],
+          decision: [7, 11],
+          emotion: [4, 7],
+          humor: [0, 3],
+          responsibility: [10, 14],
+          challenge: [5, 8],
+          confidence: [6, 9]
+        },
+        rarity: 8.0
+      },
+      'Friend Collector': {
+        name: '扩列狂魔',
+        description: '享受互动，如主动聊天或发表情，在人多的服务器中活跃。偏好A或D选项，强调社交乐趣。',
+        ranges: {
+          social: [11, 14],
+          decision: [2, 5],
+          emotion: [7, 11],
+          humor: [6, 10],
+          responsibility: [1, 4],
+          challenge: [1, 5],
+          confidence: [5, 8]
+        },
+        rarity: 10.0
+      },
+      'Confident Competitor': {
+        name: '装杯带师',
+        description: '追求排名和超越，如尝试破记录，在KOG模式中强势。选项强调自信和挑战。',
+        ranges: {
+          social: [4, 7],
+          decision: [5, 8],
+          emotion: [7, 11],
+          humor: [1, 4],
+          responsibility: [-1, 3],
+          challenge: [11, 14],
+          confidence: [11, 14]
+        },
+        rarity: 4.0
+      },
+
+
+      'Challenge Avoider': {
+        name: '摆烂仙人',
+        description: '回避高难度内容，如换图或放弃，在卡关时常见。选项偏向B或D的逃避行为。',
+        ranges: {
+          social: [-8, 2],
+          decision: [-7, 1],
+          emotion: [-9, 3],
+          humor: [0, 3],
+          responsibility: [-11, 5],
+          challenge: [-13, 7],
+          confidence: [-10, 4]
+        },
+        rarity: 5.0
+      },
+      'Self-Deprecating Humorist': {
+        name: '小丑竟是我',
+        description: '用自嘲梗如"燕子"或"技术原因"掩饰不足，在失误时幽默化解。常选D选项。',
+        ranges: {
+          social: [5, 9],
+          decision: [1, 4],
+          emotion: [4, 7],
+          humor: [9, 13],
+          responsibility: [-6, -1],
+          challenge: [-1, 3],
+          confidence: [-8, 2]
+        },
+        rarity: 2.0
+      },
+      'Rusher': {
+        name: '偷跑Tee',
+        description: '个人主义偷跑，忽略团队，在DDR模式中常见。选项如A或B，强调个人速度。',
+        ranges: {
+          social: [-11, 5],
+          decision: [-9, 3],
+          emotion: [-1, 3],
+          humor: [0, 3],
+          responsibility: [-13, 7],
+          challenge: [7, 11],
+          confidence: [6, 10]
+        },
+        rarity: 3.0
+      },
+      'Balanced Player': {
+        name: '中立者',
+        description: '适应性强，无明显极端，在DDNet中随情况调整。选项分散，各角度得分平均。',
+        ranges: {
+          social: [-3, 3],
+          decision: [-4, 4],
+          emotion: [-3, 3],
+          humor: [-2, 4],
+          responsibility: [-4, 4],
+          challenge: [-3, 3],
+          confidence: [-3, 3]
+        },
+        rarity: 20.0
+      },
+      'Lying Flat Fish': {
+        name: '躺平咸鱼',
+        description: '挑战偏低但并不冷漠：他会保持礼貌互动、维持队伍气氛，却因为自信较低而倾向稳妥保守。你常能看到他“聊得来、跟得上，但不敢冲”。',
+        ranges: {
+          // 核心区分：挑战偏低 + 自信较低 + 社交中等
+          social: [1, 5],
+          challenge: [-12, -2],
+          confidence: [-12, -2],
+          // 其余维度允许波动，避免过度约束导致难命中
+          decision: [-6, 8],
+          emotion: [-6, 8],
+          humor: [-6, 8],
+          responsibility: [-6, 8]
+        },
+        rarity: 7.0
+      }
+    };
+
+    // 全局变量
+    let currentQuestionIndex = 0;
+    let answers = {};
+    let result = null;
+    let testStartTime = null; // 记录答题开始时间
+
+    // DOM元素
+    const currentQuestionEl = document.getElementById('currentQuestion');
+    const progressPercentEl = document.getElementById('progressPercent');
+    const progressBarEl = document.getElementById('progressBar');
+    const questionTextEl = document.getElementById('questionText');
+    const optionsContainerEl = document.getElementById('optionsContainer');
+    const prevBtnEl = document.getElementById('prevBtn');
+    const nextBtnEl = document.getElementById('nextBtn');
+    const redoBtnEl = document.getElementById('redoBtn');
+    const historyBtnEl = document.getElementById('historyBtn');
+    const historyModalEl = document.getElementById('historyModal');
+    const historyContainerEl = document.getElementById('historyContainer');
+    const closeHistoryBtnEl = document.getElementById('closeHistoryBtn');
+    const closeHistoryBtn2El = document.getElementById('closeHistoryBtn2');
+
+    // 初始化页面
+    function init() {
+      // 记录答题开始时间
+      testStartTime = Date.now();
+      
+      // 彻底清除所有历史记录（包括旧的localStorage记录）
+      clearAllHistory();
+      
+      // 不自动加载历史记录 - 确保新会话开始时历史记录为空
+      loadQuestion();
+      updateProgress();
+      bindEvents();
+    }
+    
+    // 彻底清除所有历史记录
+    function clearAllHistory() {
+      // 清除localStorage中的旧记录
+      localStorage.removeItem('ddnet_answers');
+      // 清除sessionStorage中的记录
+      sessionStorage.removeItem('ddnet_answers');
+      // 重置内存中的答题数据
+      answers = {};
+    }
+    
+    // 保存历史记录到会话存储（关闭浏览器后自动清除）
+    function saveHistory() {
+      sessionStorage.setItem('ddnet_answers', JSON.stringify(answers));
+    }
+    
+    // 时间限制检测
+    function checkTimeLimit() {
+      if (!testStartTime) return false;
+      const elapsedTime = (Date.now() - testStartTime) / 1000; // 转换为秒
+      return elapsedTime < 20; // 小于20秒
+    }
+    
+    // 答案模式检测 - 检查是否所有答案都是同一个选项
+    function checkAnswerPattern() {
+      const answerIndices = Object.values(answers);
+      if (answerIndices.length === 0) return false;
+      
+      // 检查是否所有答案都相同
+      const firstAnswer = answerIndices[0];
+      return answerIndices.every(index => index === firstAnswer);
+    }
+    
+    // 防刷分检测主函数
+    function validateTestSubmission() {
+      // 检查时间限制
+      if (checkTimeLimit()) {
+        alert('做题这么快，刷分吗，请重做！');
+        resetTest();
+        // 重新记录开始时间
+        testStartTime = Date.now();
+        return false;
+      }
+      
+      // 检查答案模式
+      if (checkAnswerPattern()) {
+        alert('乱选者，重做！');
+        resetTest();
+        // 重新记录开始时间
+        testStartTime = Date.now();
+        return false;
+      }
+      
+      // 通过所有检测
+      return true;
+    }
+
+    // 加载问题
+    function loadQuestion() {
+      const question = questions[currentQuestionIndex];
+      currentQuestionEl.textContent = currentQuestionIndex + 1;
+      questionTextEl.textContent = question.text;
+      
+      // 清空选项
+      optionsContainerEl.innerHTML = '';
+      
+      // 添加选项
+      question.options.forEach((option, index) => {
+        const optionEl = document.createElement('div');
+        optionEl.className = `option p-4 border border-gray-300 rounded-lg cursor-pointer option-hover ${answers[question.id] === index ? 'border-primary bg-primary bg-opacity-10' : 'bg-white bg-opacity-70'}`;
+        optionEl.dataset.index = index;
+        optionEl.dataset.value = option.value;
+        optionEl.innerHTML = `
+          <p class="font-medium text-gray-800">${option.text}</p>
+        `;
+        optionsContainerEl.appendChild(optionEl);
+      });
+      
+      // 更新按钮状态
+      updateButtonStates();
+    }
+
+    // 更新进度
+    function updateProgress() {
+      const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+      progressPercentEl.textContent = Math.round(progress) + '%';
+      progressBarEl.style.width = progress + '%';
+    }
+
+    // 更新按钮状态
+    function updateButtonStates() {
+      prevBtnEl.disabled = currentQuestionIndex === 0;
+      nextBtnEl.disabled = answers[questions[currentQuestionIndex].id] === undefined;
+      
+      // 第30题时，将下一题按钮改为查看结果
+      if (currentQuestionIndex === questions.length - 1) {
+        nextBtnEl.innerHTML = '查看结果 <i class="fa fa-check ml-2"></i>';
+      } else {
+        nextBtnEl.innerHTML = '下一题 <i class="fa fa-arrow-right ml-2"></i>';
+      }
+      
+      // 控制重做按钮的显示：第1题隐藏（保持占位），第2-30题显示
+      if (currentQuestionIndex === 0) {
+        redoBtnEl.style.visibility = 'hidden';
+      } else {
+        redoBtnEl.style.visibility = 'visible';
+      }
+    }
+
+    // 绑定事件
+    function bindEvents() {
+      // 选项点击事件
+      let isTransitioning = false;
+      optionsContainerEl.addEventListener('click', function(e) {
+        if (isTransitioning) return;
+        const optionEl = e.target.closest('.option');
+        if (optionEl) {
+          const index = parseInt(optionEl.dataset.index);
+          const questionId = questions[currentQuestionIndex].id;
+          answers[questionId] = index;
+          
+          // 保存历史记录
+          saveHistory();
+          
+          // 自动跳转到下一题
+          if (currentQuestionIndex < questions.length - 1) {
+            isTransitioning = true;
+            currentQuestionIndex++;
+            loadQuestion();
+            updateProgress();
+            setTimeout(() => { isTransitioning = false; }, 300);
+          } else {
+            // 所有题目回答完毕，只更新选项显示（标记为已选）
+            loadQuestion();
+          }
+        }
+      });
+      
+      // 上一题按钮
+      prevBtnEl.addEventListener('click', function() {
+        if (currentQuestionIndex > 0) {
+          currentQuestionIndex--;
+          loadQuestion();
+          updateProgress();
+        }
+      });
+      
+      // 下一题按钮
+      nextBtnEl.addEventListener('click', function() {
+        if (currentQuestionIndex < questions.length - 1) {
+          currentQuestionIndex++;
+          loadQuestion();
+          updateProgress();
+        } else {
+          // 最后一题，先进行防刷分检测
+          if (validateTestSubmission()) {
+            // 通过检测，计算并显示结果
+            calculateResult();
+            showResult();
+          }
+        }
+      });
+      
+
+      
+      // 重做按钮 - 简单直接的事件绑定
+      redoBtnEl.addEventListener('click', function() {
+        resetTest();
+      });
+      
+      // 历史记录按钮
+      historyBtnEl.addEventListener('click', function() {
+        showHistory();
+      });
+      
+      // 关闭历史记录模态框
+      closeHistoryBtnEl.addEventListener('click', function() {
+        historyModalEl.classList.add('hidden');
+      });
+      
+      closeHistoryBtn2El.addEventListener('click', function() {
+        historyModalEl.classList.add('hidden');
+      });
+      
+      // 点击模态框外部关闭
+      historyModalEl.addEventListener('click', function(e) {
+        if (e.target === historyModalEl) {
+          historyModalEl.classList.add('hidden');
+        }
+      });
+    }
+    
+    // 显示历史记录
+    function showHistory() {
+      // 清空历史记录容器
+      historyContainerEl.innerHTML = '';
+      
+      // 按题目ID排序的已答题列表
+      const answeredQuestions = Object.keys(answers)
+        .map(id => parseInt(id))
+        .sort((a, b) => a - b);
+      
+      if (answeredQuestions.length === 0) {
+        // 没有历史记录
+        historyContainerEl.innerHTML = `
+          <div class="text-center py-12 text-gray-500">
+            <i class="fa fa-history text-4xl mb-4"></i>
+            <p>暂无答题记录</p>
+          </div>
+        `;
+      } else {
+        // 生成历史记录项
+        answeredQuestions.forEach(questionId => {
+          const question = questions.find(q => q.id === questionId);
+          if (question) {
+            const selectedIndex = answers[questionId];
+            const selectedOption = question.options[selectedIndex];
+            
+            const historyItem = document.createElement('div');
+            historyItem.className = 'bg-gray-50 p-4 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors';
+            historyItem.innerHTML = `
+              <div class="flex justify-between items-start mb-2">
+                <h3 class="font-semibold text-lg">第 ${questionId} 题</h3>
+                <span class="text-sm text-gray-500">已回答</span>
+              </div>
+              <p class="text-gray-700 mb-3">${question.text}</p>
+              <div class="bg-primary bg-opacity-10 p-3 rounded-lg">
+                <p class="font-medium text-primary">你的选择：${selectedOption.text}</p>
+              </div>
+            `;
+            
+            historyContainerEl.appendChild(historyItem);
+          }
+        });
+      }
+      
+      // 显示历史记录模态框
+      historyModalEl.classList.remove('hidden');
+    }
+
+    // 人格判定原型：七维 + 总分（总分越高越积极）
+    const personalityPrototypes = {
+      'Carry Goat': { social: 4, decision: 2, emotion: 1, humor: 0, responsibility: 5, challenge: 6, confidence: 6, total: 24 },
+      'Team Supporter': { social: 6, decision: 1, emotion: 5, humor: 0, responsibility: 6, challenge: 1, confidence: 1, total: 20 },
+      'Bald Grinder': { social: -2, decision: 3, emotion: 1, humor: -1, responsibility: 0, challenge: 7, confidence: 6, total: 14 },
+      'Jokester': { social: 5, decision: 0, emotion: 3, humor: 8, responsibility: 0, challenge: 1, confidence: 1, total: 18 },
+      'Rational Thinker': { social: 1, decision: 7, emotion: 0, humor: -1, responsibility: 3, challenge: 2, confidence: 2, total: 14 },
+      'Emotional Player': { social: -3, decision: -3, emotion: -8, humor: -1, responsibility: -3, challenge: -2, confidence: -4, total: -24 },
+      'Responsible Anchor': { social: 3, decision: 4, emotion: 2, humor: -1, responsibility: 8, challenge: 2, confidence: 2, total: 20 },
+      'Friend Collector': { social: 8, decision: 1, emotion: 4, humor: 3, responsibility: 1, challenge: 0, confidence: 1, total: 18 },
+      'Confident Competitor': { social: 1, decision: 1, emotion: 1, humor: 0, responsibility: 1, challenge: 7, confidence: 8, total: 19 },
+      'Challenge Avoider': { social: -1, decision: -1, emotion: -1, humor: 1, responsibility: -2, challenge: -8, confidence: -5, total: -17 },
+      'Self-Deprecating Humorist': { social: 3, decision: 0, emotion: 1, humor: 8, responsibility: -3, challenge: -1, confidence: -2, total: 6 },
+      'Rusher': { social: -3, decision: -3, emotion: -1, humor: 0, responsibility: -8, challenge: 4, confidence: 4, total: -7 },
+      'Lying Flat Fish': { social: 3, decision: 1, emotion: 0, humor: 0, responsibility: 1, challenge: -6, confidence: -6, total: -7 },
+      'Balanced Player': { social: 0, decision: 0, emotion: 0, humor: 0, responsibility: 0, challenge: 0, confidence: 0, total: 0 }
+    };
+
+    // 计算结果
+    function calculateResult() {
+      // 初始化七个角度的分数
+      const scores = {
+        social: 0,
+        decision: 0,
+        emotion: 0,
+        humor: 0,
+        responsibility: 0,
+        challenge: 0,
+        confidence: 0
+      };
+
+      // 计算每个角度的总分
+      Object.entries(answers).forEach(([questionId, index]) => {
+        const question = questions.find(q => q.id == questionId);
+        if (question) {
+          const option = question.options[index];
+          if (option && option.scores) {
+            // 累加每个角度的分数
+            Object.entries(option.scores).forEach(([angle, score]) => {
+              scores[angle] += score;
+            });
+          }
+        }
+      });
+
+      const totalScore = Object.values(scores).reduce((sum, n) => sum + n, 0);
+
+      // 额外硬约束：带飞者必须“挑战”最高；独攀者必须“挑战”第二高
+  function getAxisRanksByScore(s) {
+    const axisOrder = ['challenge', 'confidence', 'responsibility', 'decision', 'social', 'emotion', 'humor'];
+    const AXES = Object.keys(s);
+    return AXES
+      .slice()
+      .sort((a, b) => (s[b] - s[a]) || (axisOrder.indexOf(a) - axisOrder.indexOf(b)));
+  }
+  const axisRanks = getAxisRanksByScore(scores);
+      const isChallengeTop1 = axisRanks[0] === 'challenge';
+      const isChallengeTop2 = axisRanks[1] === 'challenge';
+
+      // 极端兜底：保证明显极端样本不会被中间人格误判
+      if (totalScore <= -12 && scores.emotion <= -5) {
+        result = { type: 'Emotional Player', ...ddnetTypes['Emotional Player'], scores, totalScore };
+        return;
+      }
+      if (scores.challenge <= -5 && scores.confidence <= -4) {
+        result = { type: 'Challenge Avoider', ...ddnetTypes['Challenge Avoider'], scores, totalScore };
+        return;
+      }
+      if (scores.responsibility <= -6 && scores.decision <= -3 && scores.challenge >= 2) {
+        result = { type: 'Rusher', ...ddnetTypes['Rusher'], scores, totalScore };
+        return;
+      }
+
+      // 新增人格硬门槛：挑战偏低 + 社交中等 + 自信较低
+      // 额外约束用于提高区分度：情绪不极端负，避免与“键盘粉碎者”混淆
+      if (
+        scores.challenge <= -3 &&
+        scores.confidence <= -3 &&
+        scores.social >= 1 && scores.social <= 5 &&
+        scores.emotion >= -2
+      ) {
+        result = { type: 'Lying Flat Fish', ...ddnetTypes['Lying Flat Fish'], scores, totalScore };
+        return;
+      }
+
+      // 常规判定：与人格原型做加权距离，最小即匹配（唯一）
+      const axisWeights = {
+        social: 1.0,
+        decision: 1.1,
+        emotion: 1.0,
+        humor: 1.0,
+        responsibility: 1.2,
+        challenge: 1.1,
+        confidence: 1.1
+      };
+      const totalWeight = 0.9;
+      const tieBreakerOrder = [
+        'Carry Goat', 'Responsible Anchor', 'Team Supporter', 'Rational Thinker',
+        'Confident Competitor', 'Bald Grinder', 'Friend Collector', 'Jokester',
+        'Self-Deprecating Humorist', 'Balanced Player', 'Lying Flat Fish', 'Rusher', 'Challenge Avoider', 'Emotional Player'
+      ];
+
+      let matchedType = 'Balanced Player';
+      let bestDistance = Infinity;
+      for (const type of tieBreakerOrder) {
+        // 应用硬约束（仅对指定人格生效；不满足则直接排除该候选）
+        if (type === 'Carry Goat' && !isChallengeTop1) continue;
+        if (type === 'Bald Grinder' && !isChallengeTop2) continue;
+
+        const prototype = personalityPrototypes[type];
+        let distance = 0;
+        Object.entries(axisWeights).forEach(([axis, weight]) => {
+          const delta = scores[axis] - prototype[axis];
+          distance += weight * delta * delta;
+        });
+        const totalDelta = totalScore - prototype.total;
+        distance += totalWeight * totalDelta * totalDelta;
+
+        if (distance < bestDistance) {
+          bestDistance = distance;
+          matchedType = type;
+        }
+      }
+
+      // 如果找到匹配的类型
+      if (matchedType) {
+        result = {
+          type: matchedType,
+          ...ddnetTypes[matchedType],
+          scores: scores,
+          totalScore
+        };
+      } else {
+        // 如果没有找到匹配的类型，使用默认类型（Balanced Player）
+        result = {
+          type: 'Balanced Player',
+          ...ddnetTypes['Balanced Player'],
+          scores: scores,
+          totalScore
+        };
+      }
+    }
+
+    // 显示结果
+      function showResult() {
+        if (result) {
+          // 清除该人格的报告生成状态
+          localStorage.removeItem('reportGenerated_' + result.type);
+          
+          // 跳转到结果页面，传递类型和答题内容
+          window.location.href = `result.html?type=${encodeURIComponent(result.type)}&answers=${encodeURIComponent(JSON.stringify(answers))}`;
+        }
+      }
+
+    // 重置测试 - 清除所有记录，从第一题重新开始
+    function resetTest() {
+      // 彻底清除所有历史记录
+      clearAllHistory();
+      
+      // 重置答题进度
+      currentQuestionIndex = 0;
+      result = null;
+      
+      // 重新记录答题开始时间
+      testStartTime = Date.now();
+      
+      // 重新加载当前题目（第1题）
+      loadQuestion();
+      
+      // 更新进度显示
+      updateProgress();
+    }
+
+    // 初始化
+    init();
+  </script>
+</body>
+</html>
